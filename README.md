@@ -1,5 +1,7 @@
 # Capital Decision Lab
 
+Capital Decision Lab supports method packs: Core, Thorp, Mauboussin, Contrarian Filings, and Committee Mode.
+
 Capital Decision Lab is a local-first stock exposure research engine for Kelly sizing, convex upside, margin safety, and evidence intelligence.
 
 Capital Decision Lab can walk a user from current portfolio → thesis → evidence gathering → Bayesian update → Kelly / convexity / margin → model-implied recommendation → user-authorized decision record.

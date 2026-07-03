@@ -34,6 +34,7 @@ from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.orchestration.compare import compare_case
 from capital_decision_lab.orchestration.record import record_from_files
 from capital_decision_lab.orchestration.research_run import _load_confirmation_responses, _load_host_inputs, run_analyze_position
+from capital_decision_lab.methods.runner import available_method_packs, run_committee, run_method_pack
 from capital_decision_lab.privacy.containment import validate_contained_path
 
 
@@ -130,6 +131,12 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     analyze_position = subcommands.add_parser("analyze-position")
     analyze_position.add_argument("--case", required=True)
     analyze_position.add_argument("--host-inputs", required=True)
+    analyze_position.add_argument("--method", default="core")
+    method = subcommands.add_parser("method")
+    method_actions = method.add_subparsers(dest="method_action", required=True)
+    method_actions.add_parser("list")
+    method_run = method_actions.add_parser("run"); method_run.add_argument("--pack", required=True); method_run.add_argument("--case", required=True)
+    method_committee = method_actions.add_parser("committee"); method_committee.add_argument("--packs", required=True, nargs="+"); method_committee.add_argument("--case", required=True)
     confirmation = subcommands.add_parser("confirmation")
     confirmation_actions = confirmation.add_subparsers(dest="confirmation_action", required=True)
     confirmation_queue = confirmation_actions.add_parser("queue"); confirmation_queue.add_argument("--case", required=True); confirmation_queue.add_argument("--host-inputs", required=True)
@@ -172,6 +179,22 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
     if action == "doctor":
         return doctor()
     root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "method":
+        command = f"capital method {args.method_action}"
+        if args.method_action == "list":
+            return 0, {**_base(command), "status": "ok", "issues": [], "method_packs": available_method_packs()}
+        case, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base(command), "status": "failed", "issues": [{"code": error}]}
+        try:
+            if args.method_action == "run":
+                result = run_method_pack(args.pack, case)
+                return 0, {**_base(command), "status": "ok", "issues": [], "method_result": result}
+            packs = [pack.strip() for item in args.packs for pack in item.split(",") if pack.strip()]
+            result = run_committee(packs, case)
+            return 0, {**_base(command), "status": "ok", "issues": [], "committee_result": result}
+        except ValueError as exc:
+            return 2, {**_base(command), "status": "failed", "issues": [{"code": str(exc)}]}
     if action == "confirmation":
         command = f"capital confirmation {args.confirmation_action}"
         if args.confirmation_action == "queue":
@@ -206,6 +229,8 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
         pending = queue.get("pending_count", 0) if isinstance(queue, dict) else 0
         return 0, {**_base(command), "status": "pending" if pending else "resolved", "issues": [], "pending_count": pending, "confirmation_queue": queue}
     if action == "analyze-position":
+        if args.method not in available_method_packs() or args.method == "committee":
+            return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": "METHOD_PACK_UNKNOWN"}]}
         document, error = _load_local_json(args.case, root)
         if error:
             return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": error}]}
@@ -216,6 +241,11 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
         if not folder.is_dir():
             return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": "HOST_INPUT_FOLDER_INVALID"}]}
         result = run_analyze_position(document, folder)
+        if result["status"] == "ok":
+            try:
+                result["method_result"] = run_method_pack(args.method, document, base_result=result)
+            except ValueError as exc:
+                return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": str(exc)}]}
         return (0 if result["status"] == "ok" else 3), {**_base("capital analyze-position"), **result}
     if action == "host":
         if args.host_action == "capabilities":

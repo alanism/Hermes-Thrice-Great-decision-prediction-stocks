@@ -2,6 +2,12 @@
 ### Operator's Manual — Capital Decision Lab
 
 ---
+Hermes Thrice Great NHI Investment turns a user’s real portfolio, thesis, and messy evidence from Polymarket, X/Twitter, Reddit, filings, screenshots, and local sources into a structured belief-update workflow.
+
+Hermes verifies the evidence, classifies it as Measured / Calculated / Modeled / Forecast, updates Bayesian probabilities, then recalculates Kelly sizing, convexity, margin safety, and model health through selected method packs like Thorp, Mauboussin, Shkreli, Laffont or Committee Mode.
+
+The result is a local, self-directed capital research operator that tells the user what the model implies — add, trim, hold, hedge, avoid margin, watch, or reject — and records the decision so future outcomes can be calibrated against the original belief
+
 
 ## 0. Read This First
 

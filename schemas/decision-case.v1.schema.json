@@ -17,9 +17,17 @@
         "required": ["alternative_id", "label"],
         "properties": {
           "alternative_id": {"type": "string", "minLength": 1},
-          "label": {"type": "string", "minLength": 1}
+          "label": {"type": "string", "minLength": 1},
+          "inputs": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/input_atom"}
+          }
         }
       }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/input_atom"}
     },
     "assumption_register_ref": {
       "type": "object",
@@ -30,6 +38,19 @@
         "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
       }
     }
+  },
+  "$defs": {
+    "input_atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "provenance_class"],
+      "properties": {
+        "value": {},
+        "provenance_class": {"enum": ["measured", "assumed"]},
+        "unit": {"type": "string"},
+        "input_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
   }
 }
-

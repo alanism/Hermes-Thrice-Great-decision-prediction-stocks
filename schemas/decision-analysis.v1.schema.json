@@ -8,11 +8,13 @@
   "properties": {
     "contract_version": {"const": "nhi.decision_analysis.v1"},
     "analysis_id": {"type": "string", "minLength": 1},
+    "alternative_id": {"type": ["string", "null"]},
     "case_ref": {"$ref": "#/$defs/reference"},
     "data": {
       "type": "object",
       "additionalProperties": {"$ref": "#/$defs/evidence_atom"}
     },
+    "simulation_metadata": {"type": "object"},
     "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
   "$defs": {

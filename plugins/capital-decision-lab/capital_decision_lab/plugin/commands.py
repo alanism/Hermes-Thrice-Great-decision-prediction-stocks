@@ -6,9 +6,19 @@ import argparse
 import importlib.metadata
 import json
 from collections.abc import Callable
+from pathlib import Path
+
+from capital_decision_lab.contracts.validation import validate_contract
+from capital_decision_lab.orchestration.analyze import analyze_case
+from capital_decision_lab.orchestration.compare import compare_case
+from capital_decision_lab.orchestration.record import record_from_files
+from capital_decision_lab.privacy.containment import validate_contained_path
 
 
 EXPECTED_HERMES_VERSION = "0.16.0"
+PROFILE_ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_LOCAL_ROOT = PROFILE_ROOT / "local"
+SYNTHETIC_CONTRACT_ROOT = PROFILE_ROOT / "fixtures" / "valid" / "contracts"
 
 
 def doctor(
@@ -51,24 +61,83 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     record.add_argument("--authorization", required=True)
 
 
-def _dispatch(args: argparse.Namespace) -> tuple[int, dict]:
+def _base(command: str) -> dict:
+    return {"command": command, "network_attempts": 0, "model_calls": 0}
+
+
+def _load_local_json(path: str, local_root: Path) -> tuple[dict | None, str | None]:
+    check = validate_contained_path(local_root, Path(path))
+    if not check["allowed"]:
+        return None, check["issues"][0]["code"]
+    try:
+        value = json.loads(Path(check["resolved_path"]).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None, "LOCAL_DOCUMENT_INVALID"
+    if not isinstance(value, dict):
+        return None, "LOCAL_DOCUMENT_INVALID"
+    return value, None
+
+
+def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tuple[int, dict]:
     action = args.capital_action
     if action == "doctor":
         return doctor()
-    return 2, {
-        "command": f"capital {action}",
-        "status": "failed",
-        "issues": [{"code": "CLI_FEATURE_DEFERRED"}],
-        "network_attempts": 0,
-        "model_calls": 0,
-    }
+    root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "validate":
+        failures: dict[str, list] = {}
+        fixtures = sorted(SYNTHETIC_CONTRACT_ROOT.glob("*.json"))
+        for path in fixtures:
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+                issues = validate_contract(document)
+            except (OSError, json.JSONDecodeError):
+                issues = [{"code": "SYNTHETIC_FIXTURE_INVALID", "path": "$"}]
+            if issues:
+                failures[path.name] = issues
+        payload = {
+            **_base("capital validate"),
+            "status": "ok" if not failures and fixtures else "failed",
+            "validated_contracts": len(fixtures) - len(failures),
+            "failures": failures,
+            "issues": [] if not failures and fixtures else [{"code": "SYNTHETIC_VALIDATION_FAILED"}],
+        }
+        return (0 if payload["status"] == "ok" else 2), payload
+    if action in {"analyze", "compare"}:
+        case, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base(f"capital {action}"), "status": "failed", "issues": [{"code": error}]}
+        contract_issues = validate_contract(case)
+        if contract_issues:
+            return 2, {**_base(f"capital {action}"), "status": "failed", "issues": contract_issues}
+        try:
+            result = analyze_case(case) if action == "analyze" else compare_case(case)
+        except (TypeError, ValueError, OverflowError):
+            return 2, {**_base(f"capital {action}"), "status": "failed", "issues": [{"code": "ORCHESTRATION_INPUT_INVALID"}]}
+        key = "analysis" if action == "analyze" else "comparison"
+        payload = {**_base(f"capital {action}"), "status": "ok", "issues": []}
+        if action == "analyze":
+            payload[key] = result
+        else:
+            payload.update(result)
+        return 0, payload
+    result = record_from_files(
+        Path(args.analysis), Path(args.authorization), local_root=root
+    )
+    return (
+        0 if result["success"] else 2,
+        {
+            **_base("capital record"),
+            "status": "ok" if result["success"] else "failed",
+            **result,
+        },
+    )
 
 
-def run_cli(argv: list[str]) -> tuple[int, dict]:
+def run_cli(argv: list[str], *, local_root: Path | None = None) -> tuple[int, dict]:
     parser = argparse.ArgumentParser(prog="capital")
     setup_cli(parser)
     args = parser.parse_args(argv)
-    return _dispatch(args)
+    return _dispatch(args, local_root=local_root)
 
 
 def handle_cli(args: argparse.Namespace) -> int:

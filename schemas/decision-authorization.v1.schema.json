@@ -18,10 +18,11 @@
     "proposal_reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["proposal_id", "canonical_hash"],
+      "required": ["proposal_id", "canonical_hash", "document_path"],
       "properties": {
         "proposal_id": {"type": "string", "minLength": 1},
-        "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "document_path": {"type": "string", "minLength": 1}
       }
     },
     "analysis_reference": {

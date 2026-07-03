@@ -15,9 +15,9 @@ def test_ledger_entry_requires_authorization_hash() -> None:
     assert "authorization_hash" in entry["required"]
 
 
-def test_no_ledger_append_or_write_behavior_exists() -> None:
+def test_ledger_exposes_only_authorized_append_behavior() -> None:
     from capital_decision_lab.contracts import ledger
 
+    assert hasattr(ledger, "append_authorized_entry")
     assert not hasattr(ledger, "append_entry")
     assert not hasattr(ledger, "write_ledger")
-

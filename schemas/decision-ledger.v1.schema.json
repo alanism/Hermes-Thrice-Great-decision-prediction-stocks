@@ -13,9 +13,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["entry_id", "proposal_hash", "analysis_hash", "authorization_hash", "previous_entry_hash", "entry_hash"],
+        "required": ["entry_id", "authorization_id", "proposal_hash", "analysis_hash", "authorization_hash", "previous_entry_hash", "entry_hash"],
         "properties": {
           "entry_id": {"type": "string", "minLength": 1},
+          "authorization_id": {"type": "string", "minLength": 1},
           "proposal_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "analysis_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "authorization_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
@@ -27,4 +28,3 @@
     "ledger_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   }
 }
-

@@ -4,7 +4,7 @@
   "title": "Decision Comparison v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contract_version", "comparison_id", "analysis_refs", "data", "disclaimer"],
+  "required": ["contract_version", "comparison_id", "analysis_refs", "data", "disclaimer", "canonical_hash"],
   "properties": {
     "contract_version": {"const": "nhi.decision_comparison.v1"},
     "comparison_id": {"type": "string", "minLength": 1},
@@ -25,7 +25,8 @@
       "type": "object",
       "additionalProperties": {"$ref": "#/$defs/evidence_atom"}
     },
-    "disclaimer": {"const": "comparison only, not financial advice"}
+    "disclaimer": {"const": "comparison only, not financial advice"},
+    "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
   "$defs": {
     "evidence_atom": {

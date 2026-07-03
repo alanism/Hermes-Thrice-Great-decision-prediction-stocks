@@ -1,25 +1,12 @@
 from __future__ import annotations
 
-import inspect
-
 from capital_decision_lab.contracts import authorization, ledger
 from capital_decision_lab.orchestration import analyze, compare, record
 
 
-def _public_functions(module) -> list[str]:
-    return [
-        name
-        for name, value in vars(module).items()
-        if not name.startswith("_") and inspect.isfunction(value)
-    ]
-
-
-def test_blocked_runtime_modules_have_no_behavior() -> None:
-    for module in (
-        authorization,
-        ledger,
-        analyze,
-        compare,
-        record,
-    ):
-        assert _public_functions(module) == [], module.__name__
+def test_excluded_creation_and_execution_surfaces_do_not_exist() -> None:
+    for module in (authorization, ledger, analyze, compare, record):
+        assert not hasattr(module, "create_proposal")
+        assert not hasattr(module, "create_authorization")
+        assert not hasattr(module, "execute_trade")
+        assert not hasattr(module, "fetch_live_data")

@@ -1,0 +1,14 @@
+name: hermes-thrice-great-nhi
+version: 0.1.0
+description: "Capital Decision Lab deterministic offline comparison profile"
+hermes_requires: "==0.16.0"
+license: "All rights reserved; publication terms pending"
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - .env.EXAMPLE
+  - skills
+  - schemas
+  - fixtures/valid
+  - plugins/capital-decision-lab
+

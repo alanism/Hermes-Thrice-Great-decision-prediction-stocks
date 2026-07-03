@@ -6,7 +6,9 @@ Hermes Thrice Great NHI Investment turns a user’s real portfolio, thesis, and 
 
 Hermes verifies the evidence, classifies it as Measured / Calculated / Modeled / Forecast, updates Bayesian probabilities, then recalculates Kelly sizing, convexity, margin safety, and model health through selected method packs like Thorp, Mauboussin, Shkreli, Laffont or Committee Mode.
 
-The result is a local, self-directed capital research operator that tells the user what the model implies — add, trim, hold, hedge, avoid margin, watch, or reject — and records the decision so future outcomes can be calibrated against the original belief
+The result is a local, self-directed capital research operator that tells the user what the model implies — add, trim, hold, hedge, avoid margin, watch, or reject — and records the decision so future outcomes can be calibrated against the original belief.
+
+**You install this through Hermes agent.**
 
 
 ## 0. Read This First

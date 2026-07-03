@@ -40,3 +40,13 @@ def test_marked_adversarial_fixture_proves_detection() -> None:
 def test_valid_scopes_are_clear_and_policy_definitions_are_exempt() -> None:
     issues = _scanner().scan_repository(ROOT, policy="domain")
     assert issues == []
+
+
+def test_root_readme_exemption_does_not_exempt_runtime_content(tmp_path: Path) -> None:
+    (tmp_path / "README.md").write_text("UCC learner disclaimer", encoding="utf-8")
+    runtime = tmp_path / "plugins" / "probe" / "module.py"
+    runtime.parent.mkdir(parents=True)
+    runtime.write_text('label = "UCC learner"\n', encoding="utf-8")
+    issues = _scanner().scan_repository(tmp_path, policy="domain")
+    assert issues
+    assert all(Path(item["path"]).name == "module.py" for item in issues)

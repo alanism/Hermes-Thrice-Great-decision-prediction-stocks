@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+from pathlib import Path
 
 
 def _scanner():
@@ -26,3 +27,12 @@ def test_conservative_comparison_language_is_allowed() -> None:
     )
     assert _scanner().scan_text(text, policy="advice") == []
 
+
+def test_root_readme_advice_disclaimer_exemption_is_narrow(tmp_path: Path) -> None:
+    (tmp_path / "README.md").write_text("recommend securities", encoding="utf-8")
+    report = tmp_path / "reports" / "result.md"
+    report.parent.mkdir()
+    report.write_text("recommend securities", encoding="utf-8")
+    issues = _scanner().scan_repository(tmp_path, policy="advice")
+    assert issues
+    assert all(Path(item["path"]).name == "result.md" for item in issues)

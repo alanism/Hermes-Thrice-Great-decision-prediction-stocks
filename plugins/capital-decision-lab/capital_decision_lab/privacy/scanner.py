@@ -129,7 +129,8 @@ def _policy_exempt(path: Path, root: Path) -> bool:
     normalized = relative.as_posix().casefold()
     runtime_policy = "plugins/capital-decision-lab/capital_decision_lab/privacy/scanner.py"
     return (
-        normalized == runtime_policy
+        normalized == "readme.md"
+        or normalized == runtime_policy
         or normalized.endswith(f"/{runtime_policy}")
         or normalized == "tests/distribution/forbidden_vocabulary.json"
         or normalized.startswith("tests/")

@@ -29,10 +29,11 @@ from capital_decision_lab.research.loop import evaluate_research_readiness
 from capital_decision_lab.research.portfolio import import_portfolio_file, validate_portfolio_snapshot
 from capital_decision_lab.host.bridge import CAPABILITIES, analysis_eligibility, extract_source, ingest_capability_response
 from capital_decision_lab.host.confirmation import apply_confirmation
+from capital_decision_lab.host.confirmation_queue import build_confirmation_queue, pair_confirmation_responses
 from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.orchestration.compare import compare_case
 from capital_decision_lab.orchestration.record import record_from_files
-from capital_decision_lab.orchestration.research_run import run_analyze_position
+from capital_decision_lab.orchestration.research_run import _load_confirmation_responses, _load_host_inputs, run_analyze_position
 from capital_decision_lab.privacy.containment import validate_contained_path
 
 
@@ -129,6 +130,11 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     analyze_position = subcommands.add_parser("analyze-position")
     analyze_position.add_argument("--case", required=True)
     analyze_position.add_argument("--host-inputs", required=True)
+    confirmation = subcommands.add_parser("confirmation")
+    confirmation_actions = confirmation.add_subparsers(dest="confirmation_action", required=True)
+    confirmation_queue = confirmation_actions.add_parser("queue"); confirmation_queue.add_argument("--case", required=True); confirmation_queue.add_argument("--host-inputs", required=True)
+    confirmation_apply = confirmation_actions.add_parser("apply"); confirmation_apply.add_argument("--queue", required=True); confirmation_apply.add_argument("--responses", required=True)
+    confirmation_status = confirmation_actions.add_parser("status"); confirmation_status.add_argument("--case", required=True)
     model_health = subcommands.add_parser("model-health")
     health_actions = model_health.add_subparsers(dest="model_health_action", required=True)
     health_check = health_actions.add_parser("check"); health_check.add_argument("--case", required=True); health_check.add_argument("--evidence", required=True)
@@ -166,6 +172,39 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
     if action == "doctor":
         return doctor()
     root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "confirmation":
+        command = f"capital confirmation {args.confirmation_action}"
+        if args.confirmation_action == "queue":
+            case, error = _load_local_json(args.case, root)
+            folder_check = validate_contained_path(root, Path(args.host_inputs))
+            if error or not folder_check["allowed"]:
+                return 2, {**_base(command), "status": "failed", "issues": [{"code": error}] if error else folder_check["issues"]}
+            bundles, _, issues = _load_host_inputs(Path(folder_check["resolved_path"]))
+            case_id = case.get("decision_case", case).get("case_id")
+            if not case_id:
+                return 2, {**_base(command), "status": "failed", "issues": [{"code": "CASE_ID_REQUIRED"}]}
+            queue = build_confirmation_queue(case_id, bundles)
+            return 0, {**_base(command), "status": "ok", "issues": issues, "confirmation_queue": queue}
+        if args.confirmation_action == "apply":
+            queue, error = _load_local_json(args.queue, root)
+            folder_check = validate_contained_path(root, Path(args.responses))
+            if error or not folder_check["allowed"]:
+                return 2, {**_base(command), "status": "failed", "issues": [{"code": error}] if error else folder_check["issues"]}
+            try:
+                pairing = pair_confirmation_responses(queue, _load_confirmation_responses(Path(folder_check["resolved_path"])))
+            except ValueError as exc:
+                return 2, {**_base(command), "status": "failed", "issues": [{"code": str(exc)}]}
+            return 0, {**_base(command), "status": "ok", "issues": [], "confirmation_pairing": pairing}
+        case, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base(command), "status": "failed", "issues": [{"code": error}]}
+        queue = case.get("confirmation_queue")
+        if queue is None and case.get("confirmation_queue_path"):
+            queue, error = _load_local_json(case["confirmation_queue_path"], root)
+        if error:
+            return 2, {**_base(command), "status": "failed", "issues": [{"code": error}]}
+        pending = queue.get("pending_count", 0) if isinstance(queue, dict) else 0
+        return 0, {**_base(command), "status": "pending" if pending else "resolved", "issues": [], "pending_count": pending, "confirmation_queue": queue}
     if action == "analyze-position":
         document, error = _load_local_json(args.case, root)
         if error:

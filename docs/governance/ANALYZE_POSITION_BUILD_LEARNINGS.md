@@ -33,3 +33,15 @@
 Re-test whether host-provided confirmations can be paired automatically in one
 folder without weakening hash binding. It remains deferred because the current
 slice accepts confirmed bundles and must not invent confirmation intent.
+
+## Confirmation queue follow-up
+
+- Went well: deterministic request IDs allow responses to survive file renames.
+- Failure observed: pairing only by a human-readable source would be ambiguous;
+  exact request, extraction, then artifact-hash precedence removed that risk.
+- Mitigation: stale hashes and multiple fallback matches are hard failures, and
+  every pairing records its match method and action.
+- Failure observed: the generic contract registry has an exact harness-owned
+  allowlist.
+- Mitigation: confirmation schemas are enforced at the host boundary without
+  changing that registry contract.

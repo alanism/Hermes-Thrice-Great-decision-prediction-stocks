@@ -14,6 +14,7 @@ from capital_decision_lab.evidence.proposals import apply_approved_proposal
 from capital_decision_lab.evidence.social import analyze_social
 from capital_decision_lab.evidence.synthesis import synthesize_evidence
 from capital_decision_lab.host.bridge import analysis_eligibility, extract_source
+from capital_decision_lab.host.confirmation_queue import apply_confirmation_responses, build_confirmation_queue
 from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.recommendation.engine import build_recommendation
 from capital_decision_lab.recommendation.health import evaluate_model_health
@@ -59,6 +60,8 @@ def _load_host_inputs(folder: Path) -> tuple[list[dict], list[str], list[dict]]:
         if not isinstance(document, dict):
             issues.append({"code": "HOST_INPUT_INVALID", "path": path.name})
             continue
+        if document.get("contract_version") == "nhi.confirmation_response.v1":
+            continue
         if "extraction" in document and "document" in document:
             bundle = document
             source = bundle["extraction"].get("source_type") or bundle["document"].get("source_type")
@@ -76,6 +79,38 @@ def _load_host_inputs(folder: Path) -> tuple[list[dict], list[str], list[dict]]:
         if source:
             detected.append(source)
     return bundles, sorted(set(detected)), issues
+
+
+def _load_confirmation_responses(folder: Path) -> list[dict]:
+    responses = []
+    for path in sorted(folder.glob("*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(document, dict) and document.get("contract_version") == "nhi.confirmation_response.v1":
+            responses.append(document)
+    return responses
+
+
+def _pending_queue(queue: dict, unresolved_ids: list[str]) -> dict:
+    result = copy.deepcopy(queue)
+    result["requests"] = [item for item in queue["requests"] if item["request_id"] in unresolved_ids]
+    result["pending_count"] = len(result["requests"])
+    result["canonical_hash"] = contract_payload_hash(result)
+    return result
+
+
+def _confirmation_report(portfolio: dict, thesis: dict, bundles: list[dict], queue: dict) -> dict:
+    return {
+        "portfolio_summary": portfolio, "thesis_summary": thesis,
+        "evidence_gathered": [bundle["extraction"] for bundle in bundles],
+        "evidence_requiring_confirmation": queue["requests"],
+        "measured_calculated_modeled_forecast": {}, "bayesian_belief_update": {"status": "blocked"},
+        "kelly_impact": {}, "convexity_impact": {}, "margin_safety": {}, "model_health": {"status": "blocked"},
+        "recommendation": None,
+        "required_user_action": {"prompt": "Confirm, edit, discard, or defer?", "remaining_confirmations": queue["pending_count"]},
+    }
 
 
 def _atom_value(analysis: dict, name: str, default: Any = None) -> Any:
@@ -147,8 +182,22 @@ def run_analyze_position(case_bundle: dict, host_inputs: Path) -> dict:
     if not isinstance(decision_case.get("inputs", {}).get("margin_inputs", {}).get("value"), dict):
         return {"status": "blocked_missing_margin", "mini_loop": MINI_LOOPS["margin"], "issues": issues, "recommendation": None}
     pending = [bundle for bundle in bundles if not analysis_eligibility(bundle.get("extraction", {}))["eligible"]]
+    pairing = None
     if pending:
-        return {"status": "blocked_confirmation_required", "mini_loop": MINI_LOOPS["confirmation"], "issues": [issue for bundle in pending for issue in analysis_eligibility(bundle.get("extraction", {}))["issues"]], "detected_source_types": detected, "recommendation": None}
+        queue = build_confirmation_queue(decision_case["case_id"], pending)
+        responses = _load_confirmation_responses(host_inputs)
+        if responses:
+            try:
+                applied = apply_confirmation_responses(queue, responses, bundles)
+            except ValueError as exc:
+                return {"status": "blocked_confirmation_invalid", "mini_loop": "I need confirmation before using this evidence.", "issues": [{"code": str(exc)}], "confirmation_queue": queue, "detected_source_types": detected, "recommendation": None}
+            bundles = applied["bundles"]
+            pairing = applied["pairing"]
+            if applied["unresolved_count"]:
+                queue = _pending_queue(queue, pairing["unresolved_request_ids"])
+                return {"status": "blocked_confirmation_required", "mini_loop": MINI_LOOPS["confirmation"], "issues": [], "confirmation_queue": queue, "confirmation_pairing": pairing, "detected_source_types": detected, "recommendation": None, "report": _confirmation_report(portfolio, thesis, bundles, queue)}
+        else:
+            return {"status": "blocked_confirmation_required", "mini_loop": MINI_LOOPS["confirmation"], "issues": [{"code": "HOST_EXTRACTION_CONFIRMATION_REQUIRED"}], "confirmation_queue": queue, "detected_source_types": detected, "recommendation": None, "report": _confirmation_report(portfolio, thesis, bundles, queue)}
 
     signals = _signals(bundles)
     synthesis = synthesize_evidence(signals)
@@ -192,4 +241,4 @@ def run_analyze_position(case_bundle: dict, host_inputs: Path) -> dict:
     return {"status": "ok", "issues": issues, "detected_source_types": detected, "analysis": analysis,
             "evidence_synthesis": synthesis, "belief_update": belief_update, "recommendation": recommendation,
             "decision_record": {"status": "pending_user_authorization", "recommendation_hash": recommendation["canonical_hash"]},
-            "report": report, "mini_loop": mini_loop}
+            "report": report, "mini_loop": mini_loop, "confirmation_pairing": pairing}

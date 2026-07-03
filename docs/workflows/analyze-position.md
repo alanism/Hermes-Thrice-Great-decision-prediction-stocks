@@ -12,6 +12,11 @@ synthesized before the existing belief, Kelly, convexity, margin, model-health,
 and recommendation components run. Only an assumption proposal whose
 `approval_status` is `approved` can change analysis inputs.
 
+When confirmation-response artifacts are present in the host-input folder, the
+workflow pairs them automatically. Confirmed and corrected evidence can enter
+synthesis; discarded evidence is excluded; deferred evidence remains visible
+and keeps the workflow paused.
+
 The result has twelve stable report sections: portfolio, thesis, gathered
 evidence, pending confirmations, provenance-grouped results, Bayesian update,
 Kelly impact, convexity impact, margin safety, model health, recommendation,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from capital_decision_lab.contracts.canonical import canonical_sha256, contract_payload_hash
 from capital_decision_lab.evidence.common import atom, clamp
+from capital_decision_lab.host.bridge import analysis_eligibility
 
 
 _VERIFIED = {"auto_retrieved", "user_verified", "user_corrected"}
@@ -16,11 +17,16 @@ def build_recommendation(inputs: dict) -> dict:
     limits = [float(inputs["kelly_implied_exposure"]), float(inputs["fractional_kelly"]), float(inputs["exposure_cap"]), *position_caps]
     implied = max(0.0, min(limits))
     portfolio_verified = portfolio.get("verification_status") in _VERIFIED
+    host_extractions = inputs.get("host_extractions", [])
+    host_evidence_usable = all(analysis_eligibility(bundle.get("extraction", {}))["eligible"] for bundle in host_extractions)
     update_approved = inputs.get("belief_update_status") == "approved"
     health = inputs["model_health"]["state"]
     quality = clamp(inputs.get("evidence_quality", 0.0))
     reason_codes: list[str] = []
-    if not portfolio_verified:
+    if not host_evidence_usable:
+        kind, target = "pause", current
+        reason_codes.append("HOST_EVIDENCE_CONFIRMATION_REQUIRED")
+    elif not portfolio_verified:
         kind, target = "pause", current
         reason_codes.append("PORTFOLIO_VERIFICATION_REQUIRED")
     elif not update_approved:
@@ -35,6 +41,9 @@ def build_recommendation(inputs: dict) -> dict:
     elif health == "degrading":
         kind, target = "decrease_exposure", min(current, implied)
         reason_codes.append("MODEL_HEALTH_DEGRADING")
+    elif float(inputs.get("evidence_contradiction", 0.0)) >= 0.7:
+        kind, target = "watch", current
+        reason_codes.append("EVIDENCE_CONTRADICTION")
     elif quality < 0.4:
         kind, target = "watch", current
         reason_codes.append("EVIDENCE_QUALITY_WEAK")
@@ -64,6 +73,11 @@ def build_recommendation(inputs: dict) -> dict:
         "current_exposure": atom(current, "measured", unit="capital fraction", input_refs=[hashes["portfolio_snapshot"]]),
         "exposure_delta": atom(target - current, "calculated", unit="capital fraction", input_refs=[hashes["portfolio_snapshot"], hashes["kelly_analysis"]]),
         "reason_codes": reason_codes,
+        "kelly_reason": atom("Kelly-implied exposure is above current exposure" if implied > current else "Kelly-implied exposure is at or below current exposure", "modeled"),
+        "convexity_reason": atom("convexity is supportive" if float(inputs.get("convexity_score", 0.0)) >= 0.5 else "convexity is weak", "modeled"),
+        "margin_reason": atom("margin danger overrides sizing" if inputs.get("margin_breach") or float(inputs.get("margin_buffer", 0.0)) <= 0 else "margin buffer is acceptable under supplied inputs", "modeled"),
+        "evidence_reason": atom("host evidence is source-extracted and usable" if host_extractions and host_evidence_usable else "no host extraction was supplied" if not host_extractions else "host evidence requires confirmation", "modeled"),
+        "model_health_reason": atom(f"model health is {health}", "modeled"),
         "confidence": atom(quality * (1.0 if health == "healthy" else 0.8), "modeled", unit="score"),
         "limitations": ["Model-implied action under supplied assumptions and retrieved or verified evidence."],
         "required_user_authorization": True,

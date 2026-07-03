@@ -27,6 +27,8 @@ from capital_decision_lab.recommendation.health import evaluate_model_health
 from capital_decision_lab.recommendation.records import record_recommendation
 from capital_decision_lab.research.loop import evaluate_research_readiness
 from capital_decision_lab.research.portfolio import import_portfolio_file, validate_portfolio_snapshot
+from capital_decision_lab.host.bridge import CAPABILITIES, analysis_eligibility, extract_source, ingest_capability_response
+from capital_decision_lab.host.confirmation import apply_confirmation
 from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.orchestration.compare import compare_case
 from capital_decision_lab.orchestration.record import record_from_files
@@ -122,6 +124,7 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     research = subcommands.add_parser("research")
     research_actions = research.add_subparsers(dest="research_action", required=True)
     research_loop = research_actions.add_parser("loop"); research_loop.add_argument("--case", required=True)
+    research_run = research_actions.add_parser("run"); research_run.add_argument("--case", required=True); research_run.add_argument("--host-inputs", required=True)
     model_health = subcommands.add_parser("model-health")
     health_actions = model_health.add_subparsers(dest="model_health_action", required=True)
     health_check = health_actions.add_parser("check"); health_check.add_argument("--case", required=True); health_check.add_argument("--evidence", required=True)
@@ -129,6 +132,12 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     decision = subcommands.add_parser("decision")
     decision_actions = decision.add_subparsers(dest="decision_action", required=True)
     decision_record = decision_actions.add_parser("record"); decision_record.add_argument("--recommendation", required=True); decision_record.add_argument("--authorization", required=True)
+    host = subcommands.add_parser("host")
+    host_actions = host.add_subparsers(dest="host_action", required=True)
+    host_actions.add_parser("capabilities")
+    host_ingest = host_actions.add_parser("ingest"); host_ingest.add_argument("--capability-response", required=True)
+    host_extract = host_actions.add_parser("extract"); host_extract.add_argument("--source", required=True, choices=["polymarket", "x_twitter", "reddit", "portfolio", "broker_margin", "manual_note"]); host_extract.add_argument("--input", required=True)
+    host_confirm = host_actions.add_parser("confirm"); host_confirm.add_argument("--extraction", required=True); host_confirm.add_argument("--confirmation", required=True)
 
 
 def _base(command: str) -> dict:
@@ -153,6 +162,35 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
     if action == "doctor":
         return doctor()
     root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "host":
+        if args.host_action == "capabilities":
+            return 0, {**_base("capital host capabilities"), "status": "ok", "issues": [], "capabilities": list(CAPABILITIES)}
+        if args.host_action == "ingest":
+            document, error = _load_local_json(args.capability_response, root)
+            if error:
+                return 2, {**_base("capital host ingest"), "status": "failed", "issues": [{"code": error}]}
+            try:
+                ingested = ingest_capability_response(document)
+            except ValueError as exc:
+                return 2, {**_base("capital host ingest"), "status": "failed", "issues": [{"code": str(exc)}]}
+            return 0, {**_base("capital host ingest"), "status": "ok", "issues": [], "host_response": ingested}
+        if args.host_action == "extract":
+            document, error = _load_local_json(args.input, root)
+            if error:
+                return 2, {**_base("capital host extract"), "status": "failed", "issues": [{"code": error}]}
+            result = extract_source(args.source, document)
+            code = 0 if result["status"] == "ok" else 3
+            return code, {**_base("capital host extract"), **result}
+        bundle, bundle_error = _load_local_json(args.extraction, root)
+        confirmation, confirmation_error = _load_local_json(args.confirmation, root)
+        error = bundle_error or confirmation_error
+        if error:
+            return 2, {**_base("capital host confirm"), "status": "failed", "issues": [{"code": error}]}
+        try:
+            confirmed = apply_confirmation(bundle, confirmation)
+        except ValueError as exc:
+            return 2, {**_base("capital host confirm"), "status": "failed", "issues": [{"code": str(exc)}]}
+        return 0, {**_base("capital host confirm"), "status": "ok", "issues": [], "extraction_bundle": confirmed}
     if action == "portfolio":
         command = f"capital portfolio {args.portfolio_action}"
         if args.portfolio_action == "import":
@@ -176,9 +214,25 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
         document, error = _load_local_json(args.case, root)
         if error:
             return 2, {**_base("capital research loop"), "status": "failed", "issues": [{"code": error}]}
+        if args.research_action == "run":
+            folder_check = validate_contained_path(root, Path(args.host_inputs))
+            if not folder_check["allowed"]:
+                return 2, {**_base("capital research run"), "status": "failed", "issues": folder_check["issues"]}
+            folder = Path(folder_check["resolved_path"])
+            bundles = []
+            try:
+                bundles = [json.loads(path.read_text(encoding="utf-8")) for path in sorted(folder.glob("*.json"))]
+            except (OSError, json.JSONDecodeError):
+                return 2, {**_base("capital research run"), "status": "failed", "issues": [{"code": "HOST_INPUT_INVALID"}]}
+            if not bundles:
+                return 3, {**_base("capital research run"), "status": "blocked_missing_user_input", "issues": [{"code": "HOST_INPUTS_REQUIRED"}]}
+            eligibility = [analysis_eligibility(bundle.get("extraction", {})) for bundle in bundles]
+            if any(not item["eligible"] for item in eligibility):
+                return 3, {**_base("capital research run"), "status": "blocked_low_confidence", "issues": [issue for item in eligibility for issue in item["issues"]]}
         result = evaluate_research_readiness(document)
         code = 0 if result["status"] == "analysis_ready" else 3
-        return code, {**_base("capital research loop"), "status": result["status"], "issues": [], "research_loop": result}
+        command = f"capital research {args.research_action}"
+        return code, {**_base(command), "status": result["status"], "issues": [], "research_loop": result}
     if action == "model-health":
         case, case_error = _load_local_json(args.case, root)
         evidence, evidence_error = _load_local_json(args.evidence, root)

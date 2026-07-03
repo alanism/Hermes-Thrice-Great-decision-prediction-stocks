@@ -27,6 +27,7 @@
       "properties": {
         "name": {"type": "string", "minLength": 1}, "probability": {"type": "number"},
         "volume": {"type": "number"}, "rate_change_bps": {"type": "number"},
+        "yes_price": {"type": "number"}, "no_price": {"type": "number"},
         "tags": {"type": "array", "items": {"type": "string"}},
         "actor": {"type": "string"}, "threshold_direction": {"enum": ["above", "below"]}
       }

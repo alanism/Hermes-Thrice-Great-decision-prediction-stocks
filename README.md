@@ -236,7 +236,14 @@ capital belief update --case <path> --evidence <path> --sensitivity <path>
 capital model-health check --case <path> --evidence <path>
 capital recommend --case <path>
 capital decision record --recommendation <path> --authorization <path>
+capital host capabilities
+capital host ingest --capability-response <path>
+capital host extract --source <polymarket|x_twitter|reddit|portfolio|broker_margin|manual_note> --input <path>
+capital host confirm --extraction <path> --confirmation <path>
+capital research run --case <path> --host-inputs <folder>
 ```
+
+Hermes Desktop can supply real browser, screenshot/OCR, authenticated-session, clipboard, file-picker, pasted, and manual evidence through the host bridge. Synthetic repository fixtures are tests and demos only. Real runtime data remains in local user storage and out of Git.
 
 ```bash
 capital compare --case <path>

@@ -19,7 +19,7 @@
     "echo_chamber_risk": {"type": "number"},
     "noise_penalty": {"type": "number"}
     ,"author_handle": {"type": "string"}, "author_display_name": {"type": "string"},
-    "post_url": {"type": "string"}, "screenshot_artifact": {"type": "object"},
+    "post_url": {"type": "string"}, "screenshot_artifact": {"type": "object"}, "screenshot_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "likes": {"type": "integer"}, "reposts": {"type": "integer"}, "replies": {"type": "integer"},
     "views": {"type": "integer"}, "bookmarks": {"type": "integer"}, "quoted_source": {"type": "string"},
     "subreddit": {"type": "string"}, "thread_title": {"type": "string"}, "thread_url": {"type": "string"},

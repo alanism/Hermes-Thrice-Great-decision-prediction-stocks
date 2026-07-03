@@ -3,7 +3,7 @@
   "$id": "https://capital-decision-lab.invalid/schemas/recommendation.v1.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contract_version", "recommendation_id", "case_id", "portfolio_snapshot_hash", "belief_state_hash", "evidence_synthesis_hash", "kelly_analysis_hash", "convexity_analysis_hash", "margin_analysis_hash", "model_health_hash", "recommendation_type", "model_implied_action", "target_exposure", "current_exposure", "exposure_delta", "reason_codes", "confidence", "limitations", "required_user_authorization", "canonical_hash"],
+  "required": ["contract_version", "recommendation_id", "case_id", "portfolio_snapshot_hash", "belief_state_hash", "evidence_synthesis_hash", "kelly_analysis_hash", "convexity_analysis_hash", "margin_analysis_hash", "model_health_hash", "recommendation_type", "model_implied_action", "target_exposure", "current_exposure", "exposure_delta", "reason_codes", "kelly_reason", "convexity_reason", "margin_reason", "evidence_reason", "model_health_reason", "confidence", "limitations", "required_user_authorization", "canonical_hash"],
   "properties": {
     "contract_version": {"const": "nhi.recommendation.v1"},
     "recommendation_id": {"type": "string"}, "case_id": {"type": "string"},
@@ -18,6 +18,9 @@
     "model_implied_action": {"type": "string"},
     "target_exposure": {"$ref": "#/$defs/atom"}, "current_exposure": {"$ref": "#/$defs/atom"},
     "exposure_delta": {"$ref": "#/$defs/atom"}, "confidence": {"$ref": "#/$defs/atom"},
+    "kelly_reason": {"$ref": "#/$defs/atom"}, "convexity_reason": {"$ref": "#/$defs/atom"},
+    "margin_reason": {"$ref": "#/$defs/atom"}, "evidence_reason": {"$ref": "#/$defs/atom"},
+    "model_health_reason": {"$ref": "#/$defs/atom"},
     "reason_codes": {"type": "array", "items": {"type": "string"}},
     "limitations": {"type": "array", "items": {"type": "string"}},
     "required_user_authorization": {"const": true},

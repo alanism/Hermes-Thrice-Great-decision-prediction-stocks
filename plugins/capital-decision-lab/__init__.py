@@ -7,8 +7,8 @@ def register(ctx) -> None:
     """Register the supported ``hermes capital`` command tree."""
     ctx.register_cli_command(
         name="capital",
-        help="Run local capital comparison checks",
-        description="Deterministic offline capital comparison commands",
+        help="Run guided capital research and recommendation workflows",
+        description="Portfolio, evidence, sizing, model-health, recommendation, and record commands",
         setup_fn=commands.setup_cli,
         handler_fn=commands.handle_cli,
     )

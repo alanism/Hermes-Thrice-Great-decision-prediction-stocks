@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "capital-decision-lab"
 version = "0.1.0"
-description = "Local deterministic capital decision comparison tooling"
+description = "Local-first guided capital research and recommendation tooling"
 requires-python = ">=3.11,<3.14"
 dependencies = []
 

@@ -1,0 +1,72 @@
+"""Deterministic model-implied exposure recommendation engine."""
+
+from __future__ import annotations
+
+from capital_decision_lab.contracts.canonical import canonical_sha256, contract_payload_hash
+from capital_decision_lab.evidence.common import atom, clamp
+
+
+_VERIFIED = {"auto_retrieved", "user_verified", "user_corrected"}
+
+
+def build_recommendation(inputs: dict) -> dict:
+    portfolio = inputs["portfolio"]
+    current = float(inputs["current_exposure"])
+    position_caps = [float(position["max_position_cap"]) for position in portfolio.get("positions", []) if position.get("max_position_cap") is not None]
+    limits = [float(inputs["kelly_implied_exposure"]), float(inputs["fractional_kelly"]), float(inputs["exposure_cap"]), *position_caps]
+    implied = max(0.0, min(limits))
+    portfolio_verified = portfolio.get("verification_status") in _VERIFIED
+    update_approved = inputs.get("belief_update_status") == "approved"
+    health = inputs["model_health"]["state"]
+    quality = clamp(inputs.get("evidence_quality", 0.0))
+    reason_codes: list[str] = []
+    if not portfolio_verified:
+        kind, target = "pause", current
+        reason_codes.append("PORTFOLIO_VERIFICATION_REQUIRED")
+    elif not update_approved:
+        kind, target = "hold", current
+        reason_codes.append("BELIEF_UPDATE_NOT_APPROVED")
+    elif inputs.get("margin_breach") or float(inputs.get("margin_buffer", 0.0)) <= 0:
+        kind, target = "avoid_margin", min(current, implied)
+        reason_codes.append("MARGIN_OVERRIDE")
+    elif health in {"broken", "unavailable"}:
+        kind, target = "pause", current
+        reason_codes.append("MODEL_HEALTH_BLOCK")
+    elif health == "degrading":
+        kind, target = "decrease_exposure", min(current, implied)
+        reason_codes.append("MODEL_HEALTH_DEGRADING")
+    elif quality < 0.4:
+        kind, target = "watch", current
+        reason_codes.append("EVIDENCE_QUALITY_WEAK")
+    elif implied > current and float(inputs.get("convexity_score", 0.0)) >= 0.5:
+        kind, target = "increase_exposure", implied
+        reason_codes.extend(["KELLY_ABOVE_CURRENT", "CONVEXITY_SUPPORTIVE"])
+    elif implied < current:
+        kind, target = "trim_to_kelly", implied
+        reason_codes.append("KELLY_BELOW_CURRENT")
+    else:
+        kind, target = "hold", current
+        reason_codes.append("EXPOSURE_ALIGNED")
+    hashes = inputs["hashes"]
+    intents = sorted({position.get("user_intent") for position in portfolio.get("positions", []) if position.get("user_intent")})
+    reason_codes.extend(f"USER_INTENT_{intent.upper()}" for intent in intents)
+    document = {
+        "contract_version": "nhi.recommendation.v1",
+        "recommendation_id": f"recommendation_{canonical_sha256([inputs['case_id'], current, implied, kind])[:16]}",
+        "case_id": inputs["case_id"],
+        "portfolio_snapshot_hash": hashes["portfolio_snapshot"],
+        "belief_state_hash": hashes["belief_state"], "evidence_synthesis_hash": hashes["evidence_synthesis"],
+        "kelly_analysis_hash": hashes["kelly_analysis"], "convexity_analysis_hash": hashes["convexity_analysis"],
+        "margin_analysis_hash": hashes["margin_analysis"], "model_health_hash": inputs["model_health"]["canonical_hash"],
+        "recommendation_type": kind,
+        "model_implied_action": kind.replace("_", " "),
+        "target_exposure": atom(target, "forecast", unit="capital fraction", input_refs=[hashes["kelly_analysis"]]),
+        "current_exposure": atom(current, "measured", unit="capital fraction", input_refs=[hashes["portfolio_snapshot"]]),
+        "exposure_delta": atom(target - current, "calculated", unit="capital fraction", input_refs=[hashes["portfolio_snapshot"], hashes["kelly_analysis"]]),
+        "reason_codes": reason_codes,
+        "confidence": atom(quality * (1.0 if health == "healthy" else 0.8), "modeled", unit="score"),
+        "limitations": ["Model-implied action under supplied assumptions and retrieved or verified evidence."],
+        "required_user_authorization": True,
+    }
+    document["canonical_hash"] = contract_payload_hash(document)
+    return document

@@ -1,9 +1,7 @@
 agent:
-  disabled_toolsets: ["*"]
-platform_toolsets:
-  cli: []
+  disabled_toolsets: []
+platform_toolsets: {}
 plugins:
   enabled: []
   disabled: []
 mcp_servers: {}
-

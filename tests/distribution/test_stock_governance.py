@@ -30,18 +30,22 @@ def test_stock_engine_outputs_preserve_language_and_provenance_gates() -> None:
         assert scan_text(serialized, policy="advice", suffix=".json") == []
 
 
-def test_runtime_has_no_network_or_brokerage_client_imports() -> None:
-    prohibited = {"requests", "httpx", "socket", "urllib", "websocket"}
-    imports: set[str] = set()
+def test_network_imports_are_confined_to_connector_boundary() -> None:
+    network_modules = {"requests", "httpx", "socket", "urllib", "websocket"}
+    violations: list[str] = []
     runtime = ROOT / "plugins" / "capital-decision-lab" / "capital_decision_lab"
     for path in runtime.rglob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                imports.update(alias.name.split(".")[0] for alias in node.names)
+                names = {alias.name.split(".")[0] for alias in node.names}
+                if names & network_modules and "connectors" not in path.parts:
+                    violations.append(str(path))
             elif isinstance(node, ast.ImportFrom) and node.module:
-                imports.add(node.module.split(".")[0])
-    assert imports.isdisjoint(prohibited)
+                name = node.module.split(".")[0]
+                if name in network_modules and "connectors" not in path.parts:
+                    violations.append(str(path))
+    assert violations == []
 
 
 def test_stock_fixtures_are_synthetic_and_outside_private_storage() -> None:
@@ -49,3 +53,9 @@ def test_stock_fixtures_are_synthetic_and_outside_private_storage() -> None:
         relative = path.relative_to(ROOT)
         assert "local" not in {part.casefold() for part in relative.parts}
         assert _fixture(path.name)["fixture_class"] == "valid_synthetic_stock_exposure"
+
+
+def test_hermes_profile_does_not_globally_disable_connector_tools() -> None:
+    config = (ROOT / "config.yaml").read_text(encoding="utf-8")
+    assert 'disabled_toolsets: ["*"]' not in config
+    assert "platform_toolsets:\n  cli: []" not in config.replace("\r\n", "\n")

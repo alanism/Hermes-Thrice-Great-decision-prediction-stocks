@@ -1,6 +1,6 @@
 name: hermes-thrice-great-nhi
 version: 0.1.0
-description: "Capital Decision Lab deterministic offline comparison profile"
+description: "Capital Decision Lab guided portfolio research and recommendation profile"
 hermes_requires: "==0.16.0"
 license: "All rights reserved; publication terms pending"
 distribution_owned:
@@ -11,4 +11,3 @@ distribution_owned:
   - schemas
   - fixtures/valid
   - plugins/capital-decision-lab
-

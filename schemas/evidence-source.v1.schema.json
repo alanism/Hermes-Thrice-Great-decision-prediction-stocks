@@ -7,10 +7,16 @@
   "properties": {
     "contract_version": {"const": "nhi.evidence_source.v1"},
     "source_id": {"type": "string", "minLength": 1},
-    "source_type": {"enum": ["polymarket", "x_twitter", "reddit", "manual_note", "other"]},
+    "source_type": {"enum": ["polymarket", "x_twitter", "reddit", "news", "sec_filing", "company_page", "brokerage_screenshot", "portfolio_file", "manual_note", "other"]},
     "captured_at": {"type": "string", "minLength": 1},
-    "verification_status": {"enum": ["unverified_extraction", "user_verified", "user_corrected", "unavailable"]},
-    "artifact_refs": {"type": "array", "items": {"$ref": "#/$defs/artifact"}}
+    "verification_status": {"enum": ["auto_retrieved", "user_verified", "user_corrected", "unverified_extraction", "failed", "unavailable"]},
+    "artifact_refs": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "source_url": {"type": "string"},
+    "retrieval_method": {"enum": ["api", "browser", "scrape", "screenshot", "paste", "file_import", "manual", "unknown"]},
+    "retrieval_timestamp": {"type": "string"},
+    "raw_content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "extracted_fields": {"type": "object"}, "confidence": {"type": "number"},
+    "limitations": {"type": "array", "items": {"type": "string"}}
   },
   "$defs": {
     "artifact": {

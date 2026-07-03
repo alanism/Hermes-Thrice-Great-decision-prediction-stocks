@@ -9,7 +9,7 @@ from capital_decision_lab.contracts.validation import validate_contract
 from capital_decision_lab.privacy.containment import validate_contained_path
 
 
-ELIGIBLE_STATUSES = {"user_verified", "user_corrected"}
+ELIGIBLE_STATUSES = {"auto_retrieved", "user_verified", "user_corrected"}
 
 
 def update_eligibility(document: dict) -> dict:

@@ -29,7 +29,7 @@ def event_market_metrics(snapshot: dict) -> dict[str, float]:
     volume = max(0.0, float(snapshot.get("total_volume", 0.0)))
     volume_score = clamp(math.log10(volume + 1.0) / 6.0)
     outcome_volume_score = sum("volume" in item for item in snapshot["outcomes"]) / len(snapshot["outcomes"])
-    verification_score = 1.0 if snapshot.get("verification_status") in {"user_verified", "user_corrected"} else 0.0
+    verification_score = 1.0 if snapshot.get("verification_status") in {"auto_retrieved", "user_verified", "user_corrected"} else 0.0
     liquidity = clamp(
         0.35 * volume_score
         + 0.20 * outcome_volume_score

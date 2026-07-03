@@ -82,6 +82,7 @@ def test_invalid_source_type_and_verification_status_fail() -> None:
 
 
 def test_only_verified_or_corrected_evidence_is_update_eligible() -> None:
+    assert validation.update_eligibility(_item(status="auto_retrieved"))["eligible"] is True
     assert validation.update_eligibility(_item(status="user_verified"))["eligible"] is True
     assert validation.update_eligibility(_item(status="user_corrected"))["eligible"] is True
     blocked = validation.update_eligibility(_item(status="unverified_extraction"))

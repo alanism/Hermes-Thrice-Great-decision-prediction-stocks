@@ -44,7 +44,7 @@ def analyze_social(batch: dict) -> dict:
     if source not in {"x_twitter", "reddit"}:
         raise ValueError("SOCIAL_SOURCE_UNSUPPORTED")
     eligibility = update_eligibility(batch)
-    items = [item for item in batch.get("items", []) if item.get("verification_status", batch.get("verification_status")) in {"user_verified", "user_corrected"}]
+    items = [item for item in batch.get("items", []) if item.get("verification_status", batch.get("verification_status")) in {"auto_retrieved", "user_verified", "user_corrected"}]
     counts = Counter(item.get("direction", "unknown") for item in items)
     count = len(items)
     denominator = count or 1

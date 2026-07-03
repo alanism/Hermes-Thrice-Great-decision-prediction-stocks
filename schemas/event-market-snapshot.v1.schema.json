@@ -7,7 +7,7 @@
     "contract_version": {"const": "nhi.event_market_snapshot.v1"},
     "snapshot_id": {"type": "string", "minLength": 1},
     "source_type": {"const": "polymarket"},
-    "verification_status": {"enum": ["unverified_extraction", "user_verified", "user_corrected", "unavailable"]},
+    "verification_status": {"enum": ["auto_retrieved", "user_verified", "user_corrected", "unverified_extraction", "failed", "unavailable"]},
     "title": {"type": "string", "minLength": 1},
     "event_domain": {"enum": ["economy_rates", "geopolitics", "technology", "commodities", "market_structure", "company_specific", "index_market_level", "regulation_policy", "other"]},
     "event_category": {"type": "string", "minLength": 1},

@@ -2,6 +2,8 @@
 
 Capital Decision Lab is a local-first stock exposure research engine for Kelly sizing, convex upside, margin safety, and evidence intelligence.
 
+Capital Decision Lab can walk a user from current portfolio → thesis → evidence gathering → Bayesian update → Kelly / convexity / margin → model-implied recommendation → user-authorized decision record.
+
 It is part of the Hermes Thrice Great NHI family, but it is not an UnCommon Core module, not an education product, and not a curriculum system.
 
 Its default use case is evaluating concentrated stock exposure under uncertainty: asymmetric stock theses, high-upside/high-volatility positions, margin exposure, survivability before upside arrives, and user-constrained sizing. It also retains its broader decision-lab capabilities for return, risk, risk-adjusted performance, allocation, scenarios, simulation, comparison, and local decision records.
@@ -125,19 +127,18 @@ These pillars change the product priority, not its mathematical breadth. The exi
 
 Capital Decision Lab does not:
 
-- provide financial, investment, tax, legal, brokerage, fiduciary, or trading advice;
-- recommend securities;
-- tell users what to buy or sell;
+- act as a fiduciary, broker, tax adviser, or legal adviser;
 - execute transactions;
 - connect to bank accounts;
 - connect to brokerage accounts;
-- fetch live market data;
 - import transaction data;
 - perform tax planning;
 - sync to the cloud;
 - send telemetry;
 - create financial facts with an AI model;
 - authorize decisions on behalf of the user.
+
+It may retrieve public or user-authenticated research through configured connectors and produce model-implied buy, sell, hold, add, trim, hedge, watch, or pause recommendations under the user's supplied assumptions. It does not claim certainty or place orders.
 
 The system may compare alternatives under supplied assumptions, but the user remains responsible for all assumptions, decisions, actions, and outcomes.
 
@@ -220,7 +221,22 @@ capital belief update --case <path> --synthesis <path> --sensitivity <path>
 capital assumption propose --belief-update <path>
 ```
 
-These commands operate only on local files. There are no live fetch, scraping, or account-connection commands.
+Evidence analysis commands continue to support local files. Guided workflow commands may also use configured API, browser, scrape, screenshot, paste, and file-import connectors while recording retrieval provenance.
+
+```bash
+capital portfolio import --file <path>
+capital portfolio validate --file <path>
+capital thesis start --portfolio <path>
+capital thesis refine --case <path>
+capital evidence gather --case <path> --source <source> --query <query-or-url>
+capital evidence inbox --case <path> --folder <path>
+capital evidence verify --item <path>
+capital research loop --case <path>
+capital belief update --case <path> --evidence <path> --sensitivity <path>
+capital model-health check --case <path> --evidence <path>
+capital recommend --case <path>
+capital decision record --recommendation <path> --authorization <path>
+```
 
 ```bash
 capital compare --case <path>
@@ -292,7 +308,7 @@ This prevents the system from treating assumptions as facts, modeled estimates a
 
 ## Safety Boundaries
 
-Capital Decision Lab is comparison-only decision-support software.
+Capital Decision Lab is self-directed capital research and recommendation software.
 
 Allowed language:
 
@@ -304,9 +320,8 @@ Allowed language:
 
 Disallowed behavior:
 
-- claiming to provide financial advice;
 - presenting modeled ranges as predictions;
-- recommending purchases or sales;
+- presenting a model-implied recommendation as a guaranteed outcome;
 - creating facts from model output;
 - authorizing decisions for the user;
 - connecting to accounts or executing transactions.
@@ -323,7 +338,7 @@ Implemented:
 - Hermes NHI profile identity
 - clean-room containment from UCC
 - anti-UCC leakage scanner
-- anti-advice-language scanner
+- boundary-language scanner
 - private-data exclusion
 - versioned contracts
 - provenance atoms
@@ -345,7 +360,7 @@ Known limitations:
 - Monte Carlo currently supports seeded normal draws only;
 - proposals and authorizations must be authored explicitly;
 - external evidence must be entered locally and verified or corrected by the user;
-- no live source retrieval, OCR, scraping, or browser automation is included;
+- browser, screenshot extraction, and authenticated services require capabilities supplied by the Hermes host;
 - evidence synthesis uses transparent bounded heuristics rather than calibrated empirical likelihood models;
 - all ratios use decimal representation.
 
@@ -359,11 +374,7 @@ Run:
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-Expected current result:
-
-```text
-88 passed
-```
+The full committed suite must pass before distribution staging.
 
 ---
 

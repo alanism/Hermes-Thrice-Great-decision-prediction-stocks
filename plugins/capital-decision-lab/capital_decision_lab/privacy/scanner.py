@@ -16,14 +16,8 @@ _DOMAIN_TERMS = (
     "student profile", "UnCommon Core", "UCC",
 )
 _ADVICE_TERMS = (
-    "recommend", "should buy", "guaranteed", "risk-free", "safe investment",
-    "optimal portfolio", "personalized financial advice",
-    "fiduciary recommendation", "execute trade", "buy signal", "sell signal",
-    "recommended position", "optimal investment", "you should buy", "safe size",
-    "the stock will", "guaranteed upside", "undervalued", "must buy",
-    "price target is correct", "safe to use margin", "guaranteed no margin call",
-    "recommended leverage",
-    "cannot lose", "sure thing", "this will happen", "the stock will go up",
+    "guaranteed", "risk-free", "cannot lose", "sure thing", "this will happen with certainty",
+    "the stock will go up",
     "the stock will go down", "trade executed", "order placed", "brokerage connected",
     "we bought", "we sold", "we execute trades for you", "fiduciary guarantee",
     "guaranteed profit",
@@ -44,8 +38,6 @@ _ADVICE_SCOPE = (
 
 def _term_pattern(term: str) -> re.Pattern[str]:
     escaped = re.escape(term).replace(r"\ ", r"\s+")
-    if term == "recommend":
-        escaped = r"recommend(?:ation|ations|ed|ing|s)?"
     return re.compile(rf"(?<![A-Za-z0-9]){escaped}(?![A-Za-z0-9])", re.IGNORECASE)
 
 
@@ -75,6 +67,11 @@ def scan_text(text: str, *, policy: str = "domain", suffix: str = "") -> list[di
     for term in terms:
         issues.extend(_issue(code, match.group(0)) for match in _term_pattern(term).finditer(text))
     return issues
+
+
+def boundary_language_scanner(text: str) -> list[dict]:
+    """Scan guarantees, certainty, fake execution, and fake account access claims."""
+    return scan_text(text, policy="advice")
 
 
 def _is_marked_adversarial(path: Path) -> bool:

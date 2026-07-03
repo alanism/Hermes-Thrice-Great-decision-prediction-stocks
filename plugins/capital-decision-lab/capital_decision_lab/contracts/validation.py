@@ -35,7 +35,15 @@ _SCHEMA_FILES = {
     "nhi.evidence_source.v1": "evidence-source.v1.schema.json",
     "nhi.event_market_signal.v1": "event-market-signal.v1.schema.json",
     "nhi.event_market_snapshot.v1": "event-market-snapshot.v1.schema.json",
+    "nhi.portfolio_intent.v1": "portfolio-intent.v1.schema.json",
+    "nhi.portfolio_position.v1": "portfolio-position.v1.schema.json",
+    "nhi.portfolio_snapshot.v1": "portfolio-snapshot.v1.schema.json",
+    "nhi.recommendation.v1": "recommendation.v1.schema.json",
+    "nhi.recommendation_authorization.v1": "recommendation-authorization.v1.schema.json",
+    "nhi.scenario_assumption.v1": "scenario-assumption.v1.schema.json",
     "nhi.social_evidence_signal.v1": "social-evidence-signal.v1.schema.json",
+    "nhi.stock_thesis.v1": "stock-thesis.v1.schema.json",
+    "nhi.kill_condition.v1": "kill-condition.v1.schema.json",
     "nhi.thesis_sensitivity_map.v1": "thesis-sensitivity-map.v1.schema.json",
 }
 _ATOM_PROPERTIES = {

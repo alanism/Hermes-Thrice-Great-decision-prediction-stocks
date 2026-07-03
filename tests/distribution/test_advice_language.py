@@ -8,15 +8,11 @@ def _scanner():
     return importlib.import_module("capital_decision_lab.privacy.scanner")
 
 
-def test_advice_and_execution_language_is_detected() -> None:
+def test_guarantee_language_is_detected_without_blocking_model_actions() -> None:
     issues = _scanner().scan_text(
         "This is a guaranteed buy signal and you should buy.", policy="advice"
     )
-    assert {item["match"].lower() for item in issues} >= {
-        "guaranteed",
-        "buy signal",
-        "should buy",
-    }
+    assert {item["match"].lower() for item in issues} == {"guaranteed"}
 
 
 def test_conservative_comparison_language_is_allowed() -> None:
@@ -29,29 +25,21 @@ def test_conservative_comparison_language_is_allowed() -> None:
 
 
 def test_root_readme_advice_disclaimer_exemption_is_narrow(tmp_path: Path) -> None:
-    (tmp_path / "README.md").write_text("recommend securities", encoding="utf-8")
+    (tmp_path / "README.md").write_text("guaranteed outcome", encoding="utf-8")
     report = tmp_path / "reports" / "result.md"
     report.parent.mkdir()
-    report.write_text("recommend securities", encoding="utf-8")
+    report.write_text("guaranteed outcome", encoding="utf-8")
     issues = _scanner().scan_repository(tmp_path, policy="advice")
     assert issues
     assert all(Path(item["path"]).name == "result.md" for item in issues)
 
 
-def test_stock_exposure_advice_phrases_are_detected() -> None:
+def test_model_implied_recommendation_language_is_allowed() -> None:
     text = (
-        "recommended position; optimal investment; the stock will rise; "
-        "guaranteed upside; safe to use margin; recommended leverage"
+        "model-implied recommendation; increase exposure; decrease exposure; hold; "
+        "trim to Kelly; avoid margin; hedge; watch; reject the thesis"
     )
-    matches = {item["match"].lower() for item in _scanner().scan_text(text, policy="advice")}
-    assert {
-        "recommended position",
-        "optimal investment",
-        "the stock will",
-        "guaranteed upside",
-        "safe to use margin",
-        "recommended leverage",
-    } <= matches
+    assert _scanner().scan_text(text, policy="advice") == []
 
 
 def test_self_directed_model_language_is_allowed() -> None:
@@ -65,13 +53,13 @@ def test_self_directed_model_language_is_allowed() -> None:
 
 def test_certainty_execution_and_connection_claims_are_blocked() -> None:
     text = (
-        "cannot lose; sure thing; this will happen; the stock will go up; "
+        "cannot lose; sure thing; this will happen with certainty; the stock will go up; "
         "trade executed; order placed; brokerage connected; we bought; we sold; "
         "we execute trades for you; fiduciary guarantee; guaranteed profit"
     )
     matches = {item["match"].lower() for item in _scanner().scan_text(text, policy="advice")}
     assert {
-        "cannot lose", "sure thing", "this will happen", "the stock will go up",
+        "cannot lose", "sure thing", "this will happen with certainty", "the stock will go up",
         "trade executed", "order placed", "brokerage connected", "we bought", "we sold",
         "we execute trades for you", "fiduciary guarantee", "guaranteed profit",
     } <= matches

@@ -1,6 +1,6 @@
 name: capital-decision-lab
 version: 0.1.0
-description: "Deterministic offline capital comparison commands"
+description: "Guided capital research, evidence, sizing, and recommendation commands"
 kind: standalone
 requires_env: []
 provides_tools: []

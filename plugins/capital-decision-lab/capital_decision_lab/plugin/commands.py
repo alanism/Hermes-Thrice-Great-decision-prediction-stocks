@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import importlib.metadata
 import json
 from collections.abc import Callable
@@ -17,6 +18,15 @@ from capital_decision_lab.evidence.social import analyze_social
 from capital_decision_lab.evidence.sensitivity import match_sensitivity
 from capital_decision_lab.evidence.synthesis import synthesize_evidence
 from capital_decision_lab.evidence.validation import validate_local_evidence
+from capital_decision_lab.connectors.registry import ConnectorRegistry, RetrievalRequest
+from capital_decision_lab.connectors.manual_input_connector import manual_capability
+from capital_decision_lab.connectors.local_file_connector import file_import_capability
+from capital_decision_lab.connectors.web_connector import retrieve_public_url
+from capital_decision_lab.recommendation.engine import build_recommendation
+from capital_decision_lab.recommendation.health import evaluate_model_health
+from capital_decision_lab.recommendation.records import record_recommendation
+from capital_decision_lab.research.loop import evaluate_research_readiness
+from capital_decision_lab.research.portfolio import import_portfolio_file, validate_portfolio_snapshot
 from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.orchestration.compare import compare_case
 from capital_decision_lab.orchestration.record import record_from_files
@@ -79,16 +89,46 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     social.add_argument("--batch", required=True)
     synthesize = evidence_actions.add_parser("synthesize")
     synthesize.add_argument("--inputs", required=True)
+    gather = evidence_actions.add_parser("gather")
+    gather.add_argument("--case", required=True)
+    gather.add_argument("--source", required=True)
+    gather.add_argument("--query", required=True)
+    inbox = evidence_actions.add_parser("inbox")
+    inbox.add_argument("--case", required=True)
+    inbox.add_argument("--folder", required=True)
+    verify = evidence_actions.add_parser("verify")
+    verify.add_argument("--item", required=True)
     belief = subcommands.add_parser("belief")
     belief_actions = belief.add_subparsers(dest="belief_action", required=True)
     update = belief_actions.add_parser("update")
     update.add_argument("--case", required=True)
-    update.add_argument("--synthesis", required=True)
+    evidence_input = update.add_mutually_exclusive_group(required=True)
+    evidence_input.add_argument("--synthesis")
+    evidence_input.add_argument("--evidence")
     update.add_argument("--sensitivity", required=True)
     assumption = subcommands.add_parser("assumption")
     assumption_actions = assumption.add_subparsers(dest="assumption_action", required=True)
     propose = assumption_actions.add_parser("propose")
     propose.add_argument("--belief-update", required=True)
+    portfolio = subcommands.add_parser("portfolio")
+    portfolio_actions = portfolio.add_subparsers(dest="portfolio_action", required=True)
+    for name in ("import", "validate"):
+        command = portfolio_actions.add_parser(name)
+        command.add_argument("--file", required=True)
+    thesis = subcommands.add_parser("thesis")
+    thesis_actions = thesis.add_subparsers(dest="thesis_action", required=True)
+    thesis_start = thesis_actions.add_parser("start"); thesis_start.add_argument("--portfolio", required=True)
+    thesis_refine = thesis_actions.add_parser("refine"); thesis_refine.add_argument("--case", required=True)
+    research = subcommands.add_parser("research")
+    research_actions = research.add_subparsers(dest="research_action", required=True)
+    research_loop = research_actions.add_parser("loop"); research_loop.add_argument("--case", required=True)
+    model_health = subcommands.add_parser("model-health")
+    health_actions = model_health.add_subparsers(dest="model_health_action", required=True)
+    health_check = health_actions.add_parser("check"); health_check.add_argument("--case", required=True); health_check.add_argument("--evidence", required=True)
+    recommend = subcommands.add_parser("recommend"); recommend.add_argument("--case", required=True)
+    decision = subcommands.add_parser("decision")
+    decision_actions = decision.add_subparsers(dest="decision_action", required=True)
+    decision_record = decision_actions.add_parser("record"); decision_record.add_argument("--recommendation", required=True); decision_record.add_argument("--authorization", required=True)
 
 
 def _base(command: str) -> dict:
@@ -113,8 +153,97 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
     if action == "doctor":
         return doctor()
     root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "portfolio":
+        command = f"capital portfolio {args.portfolio_action}"
+        if args.portfolio_action == "import":
+            check = validate_contained_path(root, Path(args.file))
+            if not check["allowed"]:
+                return 2, {**_base(command), "status": "failed", "issues": check["issues"]}
+            imported = import_portfolio_file(Path(check["resolved_path"]))
+            code = 0 if imported["status"] == "ok" else 3
+            return code, {**_base(command), **imported}
+        document, error = _load_local_json(args.file, root)
+        issues = [{"code": error}] if error else validate_portfolio_snapshot(document, root)
+        return (0 if not issues else 2), {**_base(command), "status": "ok" if not issues else "failed", "issues": issues, "portfolio": document if not issues else None}
+    if action == "thesis":
+        path = args.portfolio if args.thesis_action == "start" else args.case
+        document, error = _load_local_json(path, root)
+        if error:
+            return 2, {**_base(f"capital thesis {args.thesis_action}"), "status": "failed", "issues": [{"code": error}]}
+        result = evaluate_research_readiness(document)
+        return 3, {**_base(f"capital thesis {args.thesis_action}"), "status": "blocked_missing_user_input", "issues": [], "research_loop": result, "prompt": "Provide or refine the thesis, scenarios, probabilities, payoffs, catalysts, and kill conditions."}
+    if action == "research":
+        document, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base("capital research loop"), "status": "failed", "issues": [{"code": error}]}
+        result = evaluate_research_readiness(document)
+        code = 0 if result["status"] == "analysis_ready" else 3
+        return code, {**_base("capital research loop"), "status": result["status"], "issues": [], "research_loop": result}
+    if action == "model-health":
+        case, case_error = _load_local_json(args.case, root)
+        evidence, evidence_error = _load_local_json(args.evidence, root)
+        error = case_error or evidence_error
+        if error:
+            return 2, {**_base("capital model-health check"), "status": "failed", "issues": [{"code": error}]}
+        try:
+            health = evaluate_model_health(**evidence)
+        except (TypeError, ValueError):
+            return 2, {**_base("capital model-health check"), "status": "failed", "issues": [{"code": "MODEL_HEALTH_INPUT_INVALID"}]}
+        return 0, {**_base("capital model-health check"), "status": "ok", "issues": [], "model_health": health}
+    if action == "recommend":
+        case, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base("capital recommend"), "status": "failed", "issues": [{"code": error}]}
+        try:
+            recommendation = build_recommendation(case)
+        except (KeyError, TypeError, ValueError):
+            return 2, {**_base("capital recommend"), "status": "failed", "issues": [{"code": "RECOMMENDATION_INPUT_INVALID"}]}
+        return 0, {**_base("capital recommend"), "status": "ok", "issues": [], "recommendation": recommendation}
+    if action == "decision":
+        recommendation, recommendation_error = _load_local_json(args.recommendation, root)
+        authorization, authorization_error = _load_local_json(args.authorization, root)
+        error = recommendation_error or authorization_error
+        if error:
+            return 2, {**_base("capital decision record"), "status": "failed", "issues": [{"code": error}]}
+        result = record_recommendation(root / "ledger" / "recommendation-ledger.json", recommendation, authorization, local_root=root)
+        return (0 if result["success"] else 2), {**_base("capital decision record"), "status": "ok" if result["success"] else "failed", **result}
     if action == "evidence":
         evidence_action = args.evidence_action
+        if evidence_action == "gather":
+            case, error = _load_local_json(args.case, root)
+            if error:
+                return 2, {**_base("capital evidence gather"), "status": "failed", "issues": [{"code": error}]}
+            is_url = args.query.startswith(("http://", "https://"))
+            is_file = args.source in {"local_file", "portfolio_file"} and not is_url
+            request = RetrievalRequest(args.source, source_url=args.query if is_url else None, query=args.query, artifact_path=args.query if is_file else None, content=args.query)
+            capabilities = {"manual": manual_capability} if args.source == "manual_note" else ({"scrape": retrieve_public_url} if request.source_url else {})
+            if is_file:
+                capabilities["file_import"] = file_import_capability(root)
+            if request.source_url and args.source in {"polymarket", "reddit"} and ("api." in request.source_url or request.source_url.endswith(".json")):
+                capabilities["api"] = retrieve_public_url
+            try:
+                gathered = ConnectorRegistry(capabilities).gather(request)
+            except ValueError as exc:
+                return 2, {**_base("capital evidence gather"), "status": "failed", "issues": [{"code": str(exc)}]}
+            success = gathered["status"] == "ok"
+            network_attempts = sum(attempt["method"] in {"api", "browser", "scrape"} for attempt in gathered["attempts"])
+            return (0 if success else 3), {**_base("capital evidence gather"), "status": "ok" if success else gathered["status"], "issues": [], "evidence": gathered, "network_attempts": network_attempts}
+        if evidence_action == "verify":
+            document, error = _load_local_json(args.item, root)
+            if error:
+                return 2, {**_base("capital evidence verify"), "status": "failed", "issues": [{"code": error}]}
+            verified = copy.deepcopy(document); verified["verification_status"] = "user_verified"
+            return 0, {**_base("capital evidence verify"), "status": "ok", "issues": [], "verified_item": verified}
+        if evidence_action == "inbox":
+            _case, case_error = _load_local_json(args.case, root)
+            if case_error:
+                return 2, {**_base("capital evidence inbox"), "status": "failed", "issues": [{"code": case_error}]}
+            folder_check = validate_contained_path(root, Path(args.folder))
+            if not folder_check["allowed"]:
+                return 2, {**_base("capital evidence inbox"), "status": "failed", "issues": folder_check["issues"]}
+            folder = Path(folder_check["resolved_path"])
+            files = [str(path) for path in sorted(folder.glob("*.json"))] if folder.is_dir() else []
+            return 0, {**_base("capital evidence inbox"), "status": "ok", "issues": [], "files": files}
         option = "file" if evidence_action == "validate" else "snapshot" if evidence_action in {"analyze-event-market", "analyze-polymarket"} else "batch" if evidence_action == "analyze-social" else "inputs"
         document, error = _load_local_json(getattr(args, option), root)
         command = f"capital evidence {evidence_action}"
@@ -141,7 +270,7 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
         return (0 if not issues else 2), payload
     if action == "belief":
         belief, belief_error = _load_local_json(args.case, root)
-        synthesis, synthesis_error = _load_local_json(args.synthesis, root)
+        synthesis, synthesis_error = _load_local_json(args.synthesis or args.evidence, root)
         sensitivity, sensitivity_error = _load_local_json(args.sensitivity, root)
         error = belief_error or synthesis_error or sensitivity_error
         if error:

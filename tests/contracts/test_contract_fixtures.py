@@ -29,7 +29,15 @@ def test_schema_loader_resolves_all_contract_versions() -> None:
         "nhi.evidence_batch.v1",
         "nhi.evidence_item.v1",
         "nhi.evidence_source.v1",
+        "nhi.kill_condition.v1",
+        "nhi.portfolio_intent.v1",
+        "nhi.portfolio_position.v1",
+        "nhi.portfolio_snapshot.v1",
+        "nhi.recommendation.v1",
+        "nhi.recommendation_authorization.v1",
+        "nhi.scenario_assumption.v1",
         "nhi.social_evidence_signal.v1",
+        "nhi.stock_thesis.v1",
         "nhi.thesis_sensitivity_map.v1",
     )
     for version in versions:

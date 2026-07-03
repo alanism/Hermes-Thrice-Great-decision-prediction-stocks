@@ -17,6 +17,7 @@ def test_analysis_contract_declares_all_provenance_classes() -> None:
         "assumed",
         "calculated",
         "modeled",
+        "forecast",
         "decided",
         "unavailable",
     ]
@@ -45,4 +46,3 @@ def test_every_decision_content_schema_requires_evidence_atoms() -> None:
     selected = proposal["properties"]["selected_action"]
     assert {"value", "provenance_class"} <= set(selected["required"])
     assert selected["properties"]["provenance_class"]["const"] == "decided"
-

@@ -46,5 +46,6 @@ def test_runtime_has_no_network_or_brokerage_client_imports() -> None:
 
 def test_stock_fixtures_are_synthetic_and_outside_private_storage() -> None:
     for path in FIXTURES.glob("*.json"):
-        assert "local" not in {part.casefold() for part in path.parts}
+        relative = path.relative_to(ROOT)
+        assert "local" not in {part.casefold() for part in relative.parts}
         assert _fixture(path.name)["fixture_class"] == "valid_synthetic_stock_exposure"

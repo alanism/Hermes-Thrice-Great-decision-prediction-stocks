@@ -52,3 +52,26 @@ def test_stock_exposure_advice_phrases_are_detected() -> None:
         "safe to use margin",
         "recommended leverage",
     } <= matches
+
+
+def test_self_directed_model_language_is_allowed() -> None:
+    text = (
+        "Kelly-implied exposure; model-implied sizing; posterior probability; "
+        "reduce exposure under this assumption set; increase exposure under this assumption set; "
+        "projected impact on Kelly; projected impact on convexity; projected impact on margin safety"
+    )
+    assert _scanner().scan_text(text, policy="advice") == []
+
+
+def test_certainty_execution_and_connection_claims_are_blocked() -> None:
+    text = (
+        "cannot lose; sure thing; this will happen; the stock will go up; "
+        "trade executed; order placed; brokerage connected; we bought; we sold; "
+        "we execute trades for you; fiduciary guarantee; guaranteed profit"
+    )
+    matches = {item["match"].lower() for item in _scanner().scan_text(text, policy="advice")}
+    assert {
+        "cannot lose", "sure thing", "this will happen", "the stock will go up",
+        "trade executed", "order placed", "brokerage connected", "we bought", "we sold",
+        "we execute trades for you", "fiduciary guarantee", "guaranteed profit",
+    } <= matches

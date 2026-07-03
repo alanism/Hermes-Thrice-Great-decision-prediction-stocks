@@ -23,6 +23,10 @@ _ADVICE_TERMS = (
     "the stock will", "guaranteed upside", "undervalued", "must buy",
     "price target is correct", "safe to use margin", "guaranteed no margin call",
     "recommended leverage",
+    "cannot lose", "sure thing", "this will happen", "the stock will go up",
+    "the stock will go down", "trade executed", "order placed", "brokerage connected",
+    "we bought", "we sold", "we execute trades for you", "fiduciary guarantee",
+    "guaranteed profit",
 )
 _TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 _PRIVATE_SURFACES = {"local"}

@@ -35,7 +35,7 @@
       "properties": {
         "value": {},
         "provenance_class": {
-          "enum": ["measured", "assumed", "calculated", "modeled", "decided", "unavailable"]
+          "enum": ["measured", "assumed", "calculated", "modeled", "forecast", "decided", "unavailable"]
         },
         "unit": {"type": "string"},
         "input_refs": {

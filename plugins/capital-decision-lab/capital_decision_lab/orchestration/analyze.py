@@ -191,7 +191,7 @@ def analyze_case(case: dict, *, alternative_id: str | None = None) -> dict:
             "provenance_and_hashes": {
                 "case_hash": case_hash,
                 "provenance_classes": [
-                    "measured", "assumed", "calculated", "modeled", "decided", "unavailable"
+                    "measured", "assumed", "calculated", "modeled", "forecast", "decided", "unavailable"
                 ],
             },
         },

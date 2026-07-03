@@ -15,12 +15,22 @@ def test_schema_loader_resolves_all_contract_versions() -> None:
     versions = validation.supported_contract_versions()
     assert versions == (
         "nhi.assumption_register.v1",
+        "nhi.assumption_update_proposal.v1",
+        "nhi.bayesian_update.v1",
+        "nhi.belief_state.v1",
         "nhi.decision_analysis.v1",
         "nhi.decision_authorization.v1",
         "nhi.decision_case.v1",
         "nhi.decision_comparison.v1",
         "nhi.decision_ledger.v1",
         "nhi.decision_proposal.v1",
+        "nhi.event_market_signal.v1",
+        "nhi.event_market_snapshot.v1",
+        "nhi.evidence_batch.v1",
+        "nhi.evidence_item.v1",
+        "nhi.evidence_source.v1",
+        "nhi.social_evidence_signal.v1",
+        "nhi.thesis_sensitivity_map.v1",
     )
     for version in versions:
         schema = validation.load_schema(version)
@@ -42,4 +52,3 @@ def test_all_adversarial_contract_fixtures_fail_with_expected_code() -> None:
         fixture = json.loads(path.read_text(encoding="utf-8"))
         issues = validation.validate_contract(fixture["document"])
         assert fixture["expected_issue_code"] in {item["code"] for item in issues}, path.name
-

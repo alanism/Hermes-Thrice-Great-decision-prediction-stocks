@@ -1,12 +1,12 @@
 # Capital Decision Lab
 
-Capital Decision Lab is a local-first stock exposure decision lab for Kelly sizing, convex upside, and margin safety.
+Capital Decision Lab is a local-first stock exposure research engine for Kelly sizing, convex upside, margin safety, and evidence intelligence.
 
 It is part of the Hermes Thrice Great NHI family, but it is not an UnCommon Core module, not an education product, and not a curriculum system.
 
 Its default use case is evaluating concentrated stock exposure under uncertainty: asymmetric stock theses, high-upside/high-volatility positions, margin exposure, survivability before upside arrives, and user-constrained sizing. It also retains its broader decision-lab capabilities for return, risk, risk-adjusted performance, allocation, scenarios, simulation, comparison, and local decision records.
 
-It does not provide financial advice.
+Capital Decision Lab is a self-directed capital research and decision-support tool. Users supply or verify assumptions, evidence, and decision preferences. The system calculates, models, forecasts, compares, flags risks, and may produce model-implied sizing or exposure outputs. The user decides whether to act. The system does not execute trades, connect to brokerages, guarantee outcomes, or treat assumptions as facts.
 
 ---
 
@@ -36,7 +36,7 @@ Every semantic output is provenance-labeled so the system does not blur facts, a
 
 ---
 
-## Three Primary Capabilities
+## Four Primary Capabilities
 
 ### 1. Kelly Criterion
 
@@ -49,6 +49,10 @@ Measures asymmetric upside through upside/downside multiples, breakeven probabil
 ### 3. Margin Management
 
 Calculates current equity, margin ratio, loan-to-value, maintenance requirements, estimated margin-call price, liquidation buffer, and manual stress rows showing losses, remaining equity, margin ratios, and threshold breaches.
+
+### 4. Evidence Intelligence
+
+Analyzes user-verified local evidence from Polymarket, X/Twitter, Reddit, and manual notes. It calculates event-market and social signals, maps them through an explicit thesis sensitivity map, performs bounded Bayesian updates, and creates pending assumption-update proposals. Only an explicitly approved proposal can flow into the main analysis.
 
 These pillars change the product priority, not its mathematical breadth. The existing return, risk, risk-adjusted, allocation, scenario, Monte Carlo, comparison, authorization, and ledger capabilities remain available.
 
@@ -204,6 +208,20 @@ capital analyze --case <path>
 
 Analyzes a local decision case and emits deterministic, provenance-labeled results.
 
+An approved evidence-driven assumption update may be supplied with `--assumption-update <path>`. Pending, rejected, and expired proposals do not change the analysis.
+
+```bash
+capital evidence validate --file <path>
+capital evidence analyze-event-market --snapshot <path>
+capital evidence analyze-polymarket --snapshot <path>
+capital evidence analyze-social --batch <path>
+capital evidence synthesize --inputs <path>
+capital belief update --case <path> --synthesis <path> --sensitivity <path>
+capital assumption propose --belief-update <path>
+```
+
+These commands operate only on local files. There are no live fetch, scraping, or account-connection commands.
+
 ```bash
 capital compare --case <path>
 ```
@@ -230,6 +248,16 @@ decision-comparison.v1.schema.json
 decision-proposal.v1.schema.json
 decision-authorization.v1.schema.json
 decision-ledger.v1.schema.json
+evidence-source.v1.schema.json
+evidence-item.v1.schema.json
+evidence-batch.v1.schema.json
+event-market-snapshot.v1.schema.json
+event-market-signal.v1.schema.json
+social-evidence-signal.v1.schema.json
+thesis-sensitivity-map.v1.schema.json
+belief-state.v1.schema.json
+bayesian-update.v1.schema.json
+assumption-update-proposal.v1.schema.json
 ```
 
 Proposal and authorization are separate by design.
@@ -253,6 +281,7 @@ measured
 assumed
 calculated
 modeled
+forecast
 decided
 unavailable
 ```
@@ -302,6 +331,10 @@ Implemented:
 - stock-focused Kelly analysis with confidence haircuts and user caps
 - convexity and upside-asymmetry analysis
 - margin threshold, liquidation-buffer, and stress analysis
+- local event-market and social evidence analysis
+- thesis-specific sensitivity mapping
+- bounded Bayesian belief updates
+- pending assumption-update proposals with approved-only analysis flow
 - proposal/authorization separation
 - atomic local ledger append
 - clean-checkout test verification
@@ -311,6 +344,9 @@ Known limitations:
 - historical tail metrics use discrete observations;
 - Monte Carlo currently supports seeded normal draws only;
 - proposals and authorizations must be authored explicitly;
+- external evidence must be entered locally and verified or corrected by the user;
+- no live source retrieval, OCR, scraping, or browser automation is included;
+- evidence synthesis uses transparent bounded heuristics rather than calibrated empirical likelihood models;
 - all ratios use decimal representation.
 
 ---

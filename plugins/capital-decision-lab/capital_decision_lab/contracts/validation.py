@@ -15,17 +15,28 @@ PROVENANCE_CLASSES = (
     "assumed",
     "calculated",
     "modeled",
+    "forecast",
     "decided",
     "unavailable",
 )
 _SCHEMA_FILES = {
+    "nhi.assumption_update_proposal.v1": "assumption-update-proposal.v1.schema.json",
     "nhi.assumption_register.v1": "assumption-register.v1.schema.json",
+    "nhi.bayesian_update.v1": "bayesian-update.v1.schema.json",
+    "nhi.belief_state.v1": "belief-state.v1.schema.json",
     "nhi.decision_analysis.v1": "decision-analysis.v1.schema.json",
     "nhi.decision_authorization.v1": "decision-authorization.v1.schema.json",
     "nhi.decision_case.v1": "decision-case.v1.schema.json",
     "nhi.decision_comparison.v1": "decision-comparison.v1.schema.json",
     "nhi.decision_ledger.v1": "decision-ledger.v1.schema.json",
     "nhi.decision_proposal.v1": "decision-proposal.v1.schema.json",
+    "nhi.evidence_batch.v1": "evidence-batch.v1.schema.json",
+    "nhi.evidence_item.v1": "evidence-item.v1.schema.json",
+    "nhi.evidence_source.v1": "evidence-source.v1.schema.json",
+    "nhi.event_market_signal.v1": "event-market-signal.v1.schema.json",
+    "nhi.event_market_snapshot.v1": "event-market-snapshot.v1.schema.json",
+    "nhi.social_evidence_signal.v1": "social-evidence-signal.v1.schema.json",
+    "nhi.thesis_sensitivity_map.v1": "thesis-sensitivity-map.v1.schema.json",
 }
 _ATOM_PROPERTIES = {
     "value",
@@ -264,7 +275,13 @@ def validate_contract(document: Any, *, schema_root: Path | None = None) -> list
     except ValueError as exc:
         return [_issue(str(exc), "$")]
 
-    if version in {"nhi.decision_analysis.v1", "nhi.decision_comparison.v1"}:
+    if version in {
+        "nhi.decision_analysis.v1",
+        "nhi.decision_comparison.v1",
+        "nhi.event_market_signal.v1",
+        "nhi.social_evidence_signal.v1",
+        "nhi.bayesian_update.v1",
+    }:
         data = document.get("data")
         if isinstance(data, dict):
             for name, atom in data.items():

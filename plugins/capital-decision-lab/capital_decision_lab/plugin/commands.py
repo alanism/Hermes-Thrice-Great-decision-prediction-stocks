@@ -32,6 +32,7 @@ from capital_decision_lab.host.confirmation import apply_confirmation
 from capital_decision_lab.orchestration.analyze import analyze_case
 from capital_decision_lab.orchestration.compare import compare_case
 from capital_decision_lab.orchestration.record import record_from_files
+from capital_decision_lab.orchestration.research_run import run_analyze_position
 from capital_decision_lab.privacy.containment import validate_contained_path
 
 
@@ -125,6 +126,9 @@ def setup_cli(parser: argparse.ArgumentParser) -> None:
     research_actions = research.add_subparsers(dest="research_action", required=True)
     research_loop = research_actions.add_parser("loop"); research_loop.add_argument("--case", required=True)
     research_run = research_actions.add_parser("run"); research_run.add_argument("--case", required=True); research_run.add_argument("--host-inputs", required=True)
+    analyze_position = subcommands.add_parser("analyze-position")
+    analyze_position.add_argument("--case", required=True)
+    analyze_position.add_argument("--host-inputs", required=True)
     model_health = subcommands.add_parser("model-health")
     health_actions = model_health.add_subparsers(dest="model_health_action", required=True)
     health_check = health_actions.add_parser("check"); health_check.add_argument("--case", required=True); health_check.add_argument("--evidence", required=True)
@@ -162,6 +166,18 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
     if action == "doctor":
         return doctor()
     root = Path(local_root or DEFAULT_LOCAL_ROOT)
+    if action == "analyze-position":
+        document, error = _load_local_json(args.case, root)
+        if error:
+            return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": error}]}
+        folder_check = validate_contained_path(root, Path(args.host_inputs))
+        if not folder_check["allowed"]:
+            return 2, {**_base("capital analyze-position"), "status": "failed", "issues": folder_check["issues"]}
+        folder = Path(folder_check["resolved_path"])
+        if not folder.is_dir():
+            return 2, {**_base("capital analyze-position"), "status": "failed", "issues": [{"code": "HOST_INPUT_FOLDER_INVALID"}]}
+        result = run_analyze_position(document, folder)
+        return (0 if result["status"] == "ok" else 3), {**_base("capital analyze-position"), **result}
     if action == "host":
         if args.host_action == "capabilities":
             return 0, {**_base("capital host capabilities"), "status": "ok", "issues": [], "capabilities": list(CAPABILITIES)}
@@ -219,6 +235,9 @@ def _dispatch(args: argparse.Namespace, *, local_root: Path | None = None) -> tu
             if not folder_check["allowed"]:
                 return 2, {**_base("capital research run"), "status": "failed", "issues": folder_check["issues"]}
             folder = Path(folder_check["resolved_path"])
+            if "decision_case" in document or "portfolio" in document or "thesis" in document:
+                result = run_analyze_position(document, folder)
+                return (0 if result["status"] == "ok" else 3), {**_base("capital research run"), **result}
             bundles = []
             try:
                 bundles = [json.loads(path.read_text(encoding="utf-8")) for path in sorted(folder.glob("*.json"))]

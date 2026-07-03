@@ -1,10 +1,10 @@
 # Capital Decision Lab
 
-Capital Decision Lab is a local-first decision-support tool for adults making uncertain capital, finance, business, and opportunity-cost decisions.
+Capital Decision Lab is a local-first stock exposure decision lab for Kelly sizing, convex upside, and margin safety.
 
 It is part of the Hermes Thrice Great NHI family, but it is not an UnCommon Core module, not an education product, and not a curriculum system.
 
-Capital Decision Lab helps you compare alternatives, label assumptions, calculate risk and return, model possible outcomes, and record human-authorized decisions in a local ledger.
+Its default use case is evaluating concentrated stock exposure under uncertainty: asymmetric stock theses, high-upside/high-volatility positions, margin exposure, survivability before upside arrives, and user-constrained sizing. It also retains its broader decision-lab capabilities for return, risk, risk-adjusted performance, allocation, scenarios, simulation, comparison, and local decision records.
 
 It does not provide financial advice.
 
@@ -14,11 +14,11 @@ It does not provide financial advice.
 
 Capital Decision Lab helps answer questions like:
 
-- Should I pay down debt or invest?
-- Should I keep more cash or take a risky opportunity?
-- Should I reduce a concentrated position?
-- Is this private investment worth the downside?
-- How much exposure is mathematically implied by my assumptions?
+- What exposure does Kelly imply under my probability and payoff assumptions?
+- Is the supplied stock thesis convex enough to compensate for its downside?
+- How far can the position fall before reaching an estimated margin threshold?
+- Which stress scenarios breach the supplied maintenance requirement?
+- Can the position survive adverse movement before a high-upside scenario arrives?
 - What happens in bear, base, and bull scenarios?
 - How sensitive is this decision to one fragile assumption?
 - What did I believe when I made this decision?
@@ -33,6 +33,24 @@ The tool separates:
 6. unavailable results.
 
 Every semantic output is provenance-labeled so the system does not blur facts, assumptions, formulas, models, and human choices.
+
+---
+
+## Three Primary Capabilities
+
+### 1. Kelly Criterion
+
+Calculates full Kelly, confidence-adjusted Kelly, fractional Kelly references, and exposure capped by an explicit user constraint. It detects negative or zero edge, validates probabilities and payoff assumptions, and can approximate expected log growth across multiple supplied scenarios.
+
+### 2. Convexity for Stock Upside
+
+Measures asymmetric upside through upside/downside multiples, breakeven probability, probability-weighted upside and downside, expected value, expected return, payoff skew, scenario dispersion, tail outcomes, and a conservative convexity score.
+
+### 3. Margin Management
+
+Calculates current equity, margin ratio, loan-to-value, maintenance requirements, estimated margin-call price, liquidation buffer, and manual stress rows showing losses, remaining equity, margin ratios, and threshold breaches.
+
+These pillars change the product priority, not its mathematical breadth. The existing return, risk, risk-adjusted, allocation, scenario, Monte Carlo, comparison, authorization, and ledger capabilities remain available.
 
 ---
 
@@ -70,6 +88,26 @@ Every semantic output is provenance-labeled so the system does not blur facts, a
 - capped fractional Kelly
 - unavailable results when assumptions or denominators are invalid
 
+### Convexity and Upside Asymmetry
+
+- upside/downside multiple
+- breakeven probability
+- probability-weighted upside and downside
+- convexity score
+- payoff skew and scenario dispersion
+- tail upside and tail downside
+- optionality note from supplied assumptions
+
+### Margin Safety
+
+- current equity and margin ratio
+- loan-to-value
+- maintenance margin threshold
+- estimated margin-call price
+- liquidation buffer
+- manual price-decline stress table
+- maintenance-threshold warnings
+
 ### Scenario and Simulation
 
 - bear/base/bull scenario analysis
@@ -103,7 +141,7 @@ The system may compare alternatives under supplied assumptions, but the user rem
 
 ## Product Philosophy
 
-Most personal finance tools track what happened.
+Most market tools track what happened or automate an action.
 
 Capital Decision Lab focuses on decision quality before and after the choice.
 
@@ -115,6 +153,8 @@ It asks:
 - What does the math say under those assumptions?
 - What is unavailable or uncertain?
 - What exposure did the user explicitly choose?
+- Is the payoff asymmetric enough under the supplied scenarios?
+- What adverse movement can the margin structure absorb before its threshold?
 - Was that decision authorized by the user?
 - What can be reviewed later for calibration?
 
@@ -259,6 +299,9 @@ Implemented:
 - versioned contracts
 - provenance atoms
 - deterministic return, risk, allocation, and simulation engines
+- stock-focused Kelly analysis with confidence haircuts and user caps
+- convexity and upside-asymmetry analysis
+- margin threshold, liquidation-buffer, and stress analysis
 - proposal/authorization separation
 - atomic local ledger append
 - clean-checkout test verification
@@ -320,4 +363,3 @@ Capital Decision Lab uses Hermes-style governance patterns:
 It is not part of UnCommon Core.
 
 It does not use UCC student, parent, curriculum, assessment, mastery, practice, or pedagogy contracts.
-

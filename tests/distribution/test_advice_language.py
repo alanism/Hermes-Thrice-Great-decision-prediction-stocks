@@ -36,3 +36,19 @@ def test_root_readme_advice_disclaimer_exemption_is_narrow(tmp_path: Path) -> No
     issues = _scanner().scan_repository(tmp_path, policy="advice")
     assert issues
     assert all(Path(item["path"]).name == "result.md" for item in issues)
+
+
+def test_stock_exposure_advice_phrases_are_detected() -> None:
+    text = (
+        "recommended position; optimal investment; the stock will rise; "
+        "guaranteed upside; safe to use margin; recommended leverage"
+    )
+    matches = {item["match"].lower() for item in _scanner().scan_text(text, policy="advice")}
+    assert {
+        "recommended position",
+        "optimal investment",
+        "the stock will",
+        "guaranteed upside",
+        "safe to use margin",
+        "recommended leverage",
+    } <= matches

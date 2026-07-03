@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from capital_decision_lab.calculations import allocation, returns, risk, simulation
+from capital_decision_lab.calculations import allocation, convexity, margin, returns, risk, simulation
 from capital_decision_lab.contracts.canonical import canonical_sha256, contract_payload_hash
 from capital_decision_lab.contracts.validation import unavailable_result
 
@@ -18,6 +18,33 @@ METRIC_NAMES = (
     "capped_fractional_kelly", "scenario_bull", "scenario_base", "scenario_bear",
     "scenario_expected_return", "terminal_p05", "terminal_p50", "terminal_p95",
     "terminal_mean", "simulation_loss_probability",
+    "full_kelly_fraction", "confidence_adjusted_kelly", "fractional_kelly_reference",
+    "capped_exposure", "capped_exposure_amount", "kelly_edge", "expected_log_growth",
+    "kelly_warning", "upside_downside_multiple", "breakeven_probability",
+    "convexity_expected_value", "convexity_expected_return", "payoff_skew",
+    "probability_weighted_upside", "probability_weighted_downside", "downside_severity",
+    "max_loss", "convexity_score", "scenario_dispersion", "tail_upside",
+    "tail_downside", "scenario_table", "optionality_note", "current_equity",
+    "current_margin_ratio", "loan_to_value", "maintenance_margin_threshold",
+    "estimated_margin_call_price", "liquidation_buffer", "liquidation_buffer_percent",
+    "margin_stress_table", "margin_warning",
+)
+
+KELLY_METRICS = (
+    "full_kelly_fraction", "confidence_adjusted_kelly", "fractional_kelly_reference",
+    "capped_exposure", "capped_exposure_amount", "kelly_edge", "expected_log_growth",
+    "kelly_warning",
+)
+CONVEXITY_METRICS = (
+    "upside_downside_multiple", "breakeven_probability", "convexity_expected_value",
+    "convexity_expected_return", "payoff_skew", "probability_weighted_upside",
+    "probability_weighted_downside", "downside_severity", "max_loss", "convexity_score",
+    "scenario_dispersion", "tail_upside", "tail_downside", "scenario_table", "optionality_note",
+)
+MARGIN_METRICS = (
+    "current_equity", "current_margin_ratio", "loan_to_value",
+    "maintenance_margin_threshold", "estimated_margin_call_price", "liquidation_buffer",
+    "liquidation_buffer_percent", "margin_stress_table", "margin_warning",
 )
 
 
@@ -118,6 +145,24 @@ def analyze_case(case: dict, *, alternative_id: str | None = None) -> dict:
                     data[name] = simulation_result["data"][name]
             simulation_metadata = simulation_result.get("metadata", {})
 
+    kelly_input = _value(inputs, "kelly_stock")
+    if isinstance(kelly_input, dict):
+        data.update(allocation.analyze_kelly(kelly_input))
+
+    convexity_input = _value(inputs, "convexity_scenarios")
+    if isinstance(convexity_input, dict):
+        convexity_result = convexity.analyze_convexity(convexity_input)
+        convexity_mapping = {
+            "expected_value": "convexity_expected_value",
+            "expected_return": "convexity_expected_return",
+        }
+        for name, atom in convexity_result.items():
+            data[convexity_mapping.get(name, name)] = atom
+
+    margin_input = _value(inputs, "margin_inputs")
+    if isinstance(margin_input, dict):
+        data.update(margin.analyze_margin(margin_input))
+
     case_hash = contract_payload_hash(case)
     identity = {"case_id": case["case_id"], "alternative_id": alternative_id}
     document = {
@@ -127,6 +172,29 @@ def analyze_case(case: dict, *, alternative_id: str | None = None) -> dict:
         "case_ref": {"id": case["case_id"], "canonical_hash": case_hash},
         "data": data,
         "simulation_metadata": simulation_metadata,
+        "report_sections": {
+            "decision_summary": [
+                "absolute_gain_loss", "roi", "cagr", "expected_value", "expected_return",
+                "volatility", "maximum_drawdown", "sharpe", "sortino", "calmar",
+            ],
+            "kelly_sizing": list(KELLY_METRICS),
+            "convexity_upside_asymmetry": list(CONVEXITY_METRICS),
+            "margin_safety": list(MARGIN_METRICS),
+            "scenario_analysis": [
+                "scenario_bull", "scenario_base", "scenario_bear",
+                "scenario_expected_return", "terminal_p05", "terminal_p50", "terminal_p95",
+            ],
+            "unavailable_metrics": [
+                name for name, atom in data.items() if atom["provenance_class"] == "unavailable"
+            ],
+            "warnings": ["kelly_warning", "margin_warning"],
+            "provenance_and_hashes": {
+                "case_hash": case_hash,
+                "provenance_classes": [
+                    "measured", "assumed", "calculated", "modeled", "decided", "unavailable"
+                ],
+            },
+        },
     }
     document["canonical_hash"] = contract_payload_hash(document)
     return document

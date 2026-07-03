@@ -15,6 +15,7 @@
       "additionalProperties": {"$ref": "#/$defs/evidence_atom"}
     },
     "simulation_metadata": {"type": "object"},
+    "report_sections": {"type": "object"},
     "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
   "$defs": {

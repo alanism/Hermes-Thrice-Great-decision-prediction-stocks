@@ -26,6 +26,7 @@
       "additionalProperties": {"$ref": "#/$defs/evidence_atom"}
     },
     "disclaimer": {"const": "comparison only, not financial advice"},
+    "report_sections": {"type": "object"},
     "canonical_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
   "$defs": {

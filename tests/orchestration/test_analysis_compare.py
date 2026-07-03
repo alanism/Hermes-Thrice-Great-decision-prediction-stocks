@@ -29,7 +29,7 @@ def test_analysis_emits_every_required_metric_as_evidence_atom() -> None:
         "scenario_expected_return", "terminal_p05", "terminal_p50", "terminal_p95",
         "terminal_mean", "simulation_loss_probability",
     }
-    assert set(result["data"]) == required
+    assert required <= set(result["data"])
     assert all(validate_evidence_atom(atom) == [] for atom in result["data"].values())
     assert result["data"]["roi"]["value"] == pytest.approx(0.1)
     assert result["data"]["capped_fractional_kelly"]["value"] == pytest.approx(0.05)
@@ -64,4 +64,3 @@ def test_comparison_is_unranked_and_schema_valid() -> None:
     assert "selected_alternative" not in document
     assert document["disclaimer"] == "comparison only, not financial advice"
     assert validate_contract(document) == []
-

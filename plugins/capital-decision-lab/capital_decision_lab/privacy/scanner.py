@@ -19,6 +19,10 @@ _ADVICE_TERMS = (
     "recommend", "should buy", "guaranteed", "risk-free", "safe investment",
     "optimal portfolio", "personalized financial advice",
     "fiduciary recommendation", "execute trade", "buy signal", "sell signal",
+    "recommended position", "optimal investment", "you should buy", "safe size",
+    "the stock will", "guaranteed upside", "undervalued", "must buy",
+    "price target is correct", "safe to use margin", "guaranteed no margin call",
+    "recommended leverage",
 )
 _TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 _PRIVATE_SURFACES = {"local"}

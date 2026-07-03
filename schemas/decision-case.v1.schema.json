@@ -8,6 +8,7 @@
   "properties": {
     "contract_version": {"const": "nhi.decision_case.v1"},
     "case_id": {"type": "string", "minLength": 1},
+    "focus": {"const": "stock_exposure"},
     "alternatives": {
       "type": "array",
       "minItems": 1,

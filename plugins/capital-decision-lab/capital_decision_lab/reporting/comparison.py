@@ -9,3 +9,13 @@ COMPARISON_QUALIFIERS = (
     "comparison only, not financial advice",
 )
 
+STOCK_EXPOSURE_SECTIONS = (
+    "decision summary",
+    "Kelly sizing",
+    "convexity and upside asymmetry",
+    "margin safety",
+    "scenario analysis",
+    "unavailable metrics",
+    "warnings",
+    "provenance and hashes",
+)

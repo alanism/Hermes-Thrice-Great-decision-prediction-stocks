@@ -44,6 +44,20 @@ def compare_case(case: dict) -> dict:
         "analysis_refs": refs,
         "data": data,
         "disclaimer": "comparison only, not financial advice",
+        "report_sections": {
+            "decision_summary": ["roi", "cagr", "volatility", "maximum_drawdown"],
+            "kelly_sizing": ["full_kelly_fraction", "capped_exposure"],
+            "convexity_upside_asymmetry": [
+                "convexity_score", "upside_downside_multiple", "convexity_expected_value"
+            ],
+            "margin_safety": ["liquidation_buffer_percent", "current_margin_ratio"],
+            "scenario_analysis": ["scenario_expected_return", "terminal_p50"],
+            "unavailable_metrics": [
+                name for name, atom in data.items() if atom["provenance_class"] == "unavailable"
+            ],
+            "warnings": ["kelly_warning", "margin_warning"],
+            "provenance_and_hashes": {"analysis_hashes": [item["canonical_hash"] for item in analyses]},
+        },
     }
     document["canonical_hash"] = contract_payload_hash(document)
     return {"comparison": document, "analyses": analyses}

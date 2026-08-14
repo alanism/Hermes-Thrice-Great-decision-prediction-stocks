@@ -1,7 +1,7 @@
 # Monocle Report — Output Artifact Anatomy
 
 The canonical shape of a `Decision > Prediction` single-stock output artifact. Design tokens live in
-`Documents/Vibe Code/Design-md collection/DESIGN-Monocle.md` (colors, Plantin/Helvetica type, spacing).
+`references/DESIGN-Monocle.md` (colors, Plantin/Helvetica type, spacing).
 Working HTML example: `~/Downloads/GOOG_Monocle_Report_Sanitized_Example.html`.
 
 No external deps. Inline SVG only. Single self-contained HTML file.

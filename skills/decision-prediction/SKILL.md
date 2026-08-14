@@ -73,7 +73,7 @@ Single-stock and portfolio research under the Hermes Thorpe evidence discipline,
 
 ### 7. Reporting (Monocle)
 - Full artifact anatomy (skeleton, 13-section order, sidebar blocks, inline-SVG chart functions, evidence-labeling conventions): `references/monocle-report-anatomy.md`. Working HTML example: `~/Downloads/GOOG_Monocle_Report_Sanitized_Example.html`.
-- Template: `Documents/Vibe Code/Design-md collection/DESIGN-Monocle.md` (`--color-newsprint-cream #fdfcf3`, `--color-signal-yellow #ffc500`, Plantin headlines, 0 radius, hairlines not shadows, 3-col grid).
+- Template: `references/DESIGN-Monocle.md` (`--color-newsprint-cream #fdfcf3`, `--color-signal-yellow #ffc500`, Plantin headlines, 0 radius, hairlines not shadows, 3-col grid).
 - Required sections when engines run: **Engines** (formula-spec), **Convexity** (four scenarios + 5 ratios), **Simulation** (seeded P5/P50/P95), updated **Sharpe/Kelly** per `kelly-criterion.md`, updated **Margin** per `margin-safety.md`, **DLC** (8 simulated lenses, labeled not attributed), **Metrology** (CORE vs EXPANDED vs ENGINES+DLC with cache).
 - DLC voices: `dlc-Galloway, Gerstner, camillo, laffont, mauboussin, munger-buffett, shkreli, thorp` — render as stylized, simulated commentary with disclaimer; no pack files assumed on disk.
 

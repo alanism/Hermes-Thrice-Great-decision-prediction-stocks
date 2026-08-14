@@ -6,6 +6,8 @@ This repo is not a standalone app. It's an **extension for the [Hermes](https://
 
 It turns your real portfolio, your thesis, and messy real-world evidence — Polymarket, X/Twitter, Reddit, SEC filings, broker screenshots — into a structured belief-update workflow, then hands that off to a **DLC investor hero** (or several at once) to do the analysis and quant math the way that investor actually thinks.
 
+> **New here? Read [START_HERE.md](START_HERE.md)** — the operational guide: what you do manually (portfolio screenshots/CSV), what's automated (cron jobs), and the artifact conventions.
+
 ---
 
 ## 1. Quick Start

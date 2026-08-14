@@ -65,6 +65,7 @@ Single-stock and portfolio research under the Hermes Thorpe evidence discipline,
 - Prior odds `prior/(1−prior)`, likelihood ratio (bounded), posterior `odds/(1+odds)` — per `bayesian-belief-updates.md`.
 - Source quality scales weight; low-liquidity/noisy/contradictory → less weight.
 - Need matching thesis sensitivity rule to set direction; need `user_verified` to apply.
+- Macro priors come from the biweekly scan KB: latest `~/Documents/Polymarket-Scans/<date>/scan.md` (fed, geopolitics, macro indicators) — see `polymarket-macro-scan` skill.
 
 ### 6. Image & cost optimization
 - Prefer **3 images** (position + 1W + 1Y) or a **stitched composite** over 17 loose files. Saves 22.4k tok / $0.067 per stock on Sonnet — more than a Flash run.
@@ -73,6 +74,7 @@ Single-stock and portfolio research under the Hermes Thorpe evidence discipline,
 
 ### 7. Reporting (Monocle)
 - Full artifact anatomy (skeleton, 13-section order, sidebar blocks, inline-SVG chart functions, evidence-labeling conventions): `references/monocle-report-anatomy.md`. Working HTML example: `~/Downloads/GOOG_Monocle_Report_Sanitized_Example.html`.
+- Artifacts live at `~/stock portfolio analyst artifacts/` as `<TICKER>_Monocle_Report.html`. UPDATE in place, overwrite, never archive. Portfolio source data: `~/stock portfolio analyst artifacts/portfolio screenshots and csv/` — latest snapshot when not supplied in chat; label as-of date + stale disclaimer. See `stock-portfolio-artifacts` skill.
 - Template: `references/DESIGN-Monocle.md` (`--color-newsprint-cream #fdfcf3`, `--color-signal-yellow #ffc500`, Plantin headlines, 0 radius, hairlines not shadows, 3-col grid).
 - Required sections when engines run: **Engines** (formula-spec), **Convexity** (four scenarios + 5 ratios), **Simulation** (seeded P5/P50/P95), updated **Sharpe/Kelly** per `kelly-criterion.md`, updated **Margin** per `margin-safety.md`, **DLC** (8 simulated lenses, labeled not attributed), **Metrology** (CORE vs EXPANDED vs ENGINES+DLC with cache).
 - DLC voices: `dlc-Galloway, Gerstner, camillo, laffont, mauboussin, munger-buffett, shkreli, thorp` — render as stylized, simulated commentary with disclaimer; no pack files assumed on disk.

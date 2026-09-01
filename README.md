@@ -85,6 +85,7 @@ Method packs are selectable research lenses on top of the same core engine — e
 | `dlc` (Core) | General-purpose path: portfolio → thesis → evidence → belief update → Kelly → convexity → margin → recommendation. |
 | `dlc-thorp` | Edward Thorp — hedge-first construction, aggressive fractional-Kelly discipline, hard leverage caps, model-health checks. |
 | `dlc-mauboussin` | Michael Mauboussin — base-rate anchoring, reverse-engineering what the current price already assumes, forecast-calibration tracking. |
+| `dlc-page` | Scott Page — Many-Model Thinking, multi-model ensemble aggregation, power-law fat-tail diagnostics, Markov regimes, Bass diffusion, and multi-armed bandits. |
 | `dlc-munger-buffett` | Munger & Buffett — quality-and-moat-first value investing, circle of competence, long-horizon compounding over short-term edge. |
 | `dlc-laffont` | Philippe Laffont (Coatue) — concentrated, high-conviction growth/tech investing built around durable secular trends. |
 | `dlc-galloway` | Scott Galloway — brand, platform-power, and market-structure lens on valuation, skeptical of narrative-driven pricing. |

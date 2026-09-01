@@ -21,7 +21,7 @@ from capital_decision_lab.privacy.scanner import scan_repository  # noqa: E402
 
 _ALLOWED_FILES = (
     Path("distribution.yaml"), Path("SOUL.md"), Path("config.yaml"),
-    Path(".env.EXAMPLE"),
+    Path(".env.EXAMPLE"), Path("dlc-page.md"),
 )
 _ALLOWED_DIRS = (
     Path("skills"), Path("schemas"), Path("fixtures/valid"),

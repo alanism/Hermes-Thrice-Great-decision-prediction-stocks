@@ -64,6 +64,232 @@ def run_method_pack(pack_id: str, case_bundle: dict, *, base_result: dict | None
         else:
             evidence_used.append("filings")
         calculations["verified_filing_count"] = len(filings)
+    elif pack_id == "page":
+        raw_inputs = case_bundle.get("model_thinking_inputs")
+        claims: list[dict] = []
+        vetoes: list[str] = []
+
+        # Validate envelope structure
+        if not isinstance(raw_inputs, dict):
+            flags.append("SCHEMA_INVALID_MODEL_INPUTS")
+            flags.append("MALFORMED_MODEL_INPUTS")
+            missing.append("model_thinking_inputs")
+            recommendation = "pause"
+            calculations["trust_status"] = "rejected"
+            calculations["binding_vetoes"] = ["SCHEMA_INVALID_MODEL_INPUTS"]
+            calculations["compiled_claims"] = []
+            calculations["active_model_count"] = 0
+            calculations["supermajority_met"] = False
+        else:
+            model_inputs = raw_inputs
+            trusted_classes = {"synthetic_test", "user_verified", "verified_local"}
+            top_trust = model_inputs.get("input_trust_class", model_inputs.get("trust_class"))
+            untrusted = False
+            schema_invalid = False
+
+            # Scan all provided model inputs for unverified or untrusted input trust class
+            active_model_keys = [k for k in ("power_law", "markov", "bass", "bandit", "bandits") if k in model_inputs]
+            if not active_model_keys and top_trust == "untrusted_external":
+                untrusted = True
+            for k in active_model_keys:
+                entry = model_inputs[k]
+                if not isinstance(entry, dict):
+                    schema_invalid = True
+                    break
+                if entry.get("contract_version") == "nhi.model_input.v1":
+                    from capital_decision_lab.contracts.validation import validate_contract
+                    contract_issues = validate_contract(entry)
+                    if contract_issues:
+                        schema_invalid = True
+                        break
+                model_trust = entry.get("input_trust_class", entry.get("trust_class", top_trust))
+                if model_trust not in trusted_classes:
+                    untrusted = True
+                    break
+
+            if schema_invalid:
+                flags.append("SCHEMA_INVALID_MODEL_INPUTS")
+                flags.append("MALFORMED_MODEL_INPUTS")
+                recommendation = "pause"
+                calculations["trust_status"] = "rejected"
+                calculations["binding_vetoes"] = ["SCHEMA_INVALID_MODEL_INPUTS"]
+                calculations["compiled_claims"] = []
+                calculations["active_model_count"] = 0
+                calculations["supermajority_met"] = False
+            elif untrusted:
+                flags.append("UNTRUSTED_EXTERNAL_INPUT")
+                recommendation = "pause"
+                calculations["trust_status"] = "rejected"
+                calculations["binding_vetoes"] = ["UNTRUSTED_EXTERNAL_INPUT"]
+                calculations["compiled_claims"] = []
+                calculations["active_model_count"] = 0
+                calculations["supermajority_met"] = False
+                vetoes.append("UNTRUSTED_EXTERNAL_INPUT")
+            else:
+                calculations["trust_status"] = "verified"
+
+                # 1. Power Law Diagnostic
+                if "power_law" in model_inputs and isinstance(model_inputs["power_law"], dict):
+                    try:
+                        from capital_decision_lab.calculations.power_law import fit_power_law_tail
+                        pl_entry = model_inputs["power_law"]
+                        pl_params = pl_entry.get("parameters", pl_entry) if isinstance(pl_entry, dict) else {}
+                        obs = pl_params.get("observations", [])
+                        xmin = float(pl_params.get("xmin", 1.0))
+                        if not isinstance(obs, list) or not obs:
+                            vetoes.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+                            flags.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+                        else:
+                            pl_res = fit_power_law_tail(obs, xmin=xmin)
+                            calculations["power_law_result"] = pl_res
+                            alpha_val = pl_res.get("data", {}).get("alpha", {}).get("value")
+                            if alpha_val is not None:
+                                if float(alpha_val) <= 2.0:
+                                    vetoes.append("HEAVY_TAIL_UNDEFINED_MEAN")
+                                    flags.append("HEAVY_TAIL_UNDEFINED_MEAN")
+                                elif float(alpha_val) <= 3.0:
+                                    flags.append("HEAVY_TAIL_INFINITE_VARIANCE_ALLOWED")
+                                    claims.append({
+                                        "claim_id": "thesis_upside",
+                                        "model_family": "power_law",
+                                        "direction": "positive",
+                                        "receipt_hash": pl_res.get("canonical_hash", "0" * 64),
+                                    })
+                                else:
+                                    claims.append({
+                                        "claim_id": "thesis_upside",
+                                        "model_family": "power_law",
+                                        "direction": "positive",
+                                        "receipt_hash": pl_res.get("canonical_hash", "0" * 64),
+                                    })
+                            else:
+                                vetoes.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+                                flags.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+                    except Exception:
+                        vetoes.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+                        flags.append("HEAVY_TAIL_FIT_UNAVAILABLE")
+
+                # 2. Markov Regime Diagnostic
+                if "markov" in model_inputs and isinstance(model_inputs["markov"], dict):
+                    try:
+                        from capital_decision_lab.calculations.markov import compute_stationary_distribution
+                        m_entry = model_inputs["markov"]
+                        m_params = m_entry.get("parameters", m_entry) if isinstance(m_entry, dict) else {}
+                        states = m_params.get("states", [])
+                        matrix = m_params.get("transition_matrix", [])
+                        if not states or not matrix:
+                            flags.append("MARKOV_INPUTS_INVALID")
+                        else:
+                            m_res = compute_stationary_distribution(states=states, transition_matrix=matrix)
+                            calculations["markov_result"] = m_res
+                            stat_dist = m_res.get("data", {}).get("stationary_distribution", {}).get("value")
+                            if isinstance(stat_dist, dict):
+                                bull_prob = stat_dist.get("bull", stat_dist.get(states[-1] if states else "", 0.0))
+                                if isinstance(bull_prob, (int, float)) and float(bull_prob) >= 0.50:
+                                    claims.append({
+                                        "claim_id": "thesis_upside",
+                                        "model_family": "markov",
+                                        "direction": "positive",
+                                        "receipt_hash": m_res.get("canonical_hash", "0" * 64),
+                                    })
+                                else:
+                                    claims.append({
+                                        "claim_id": "thesis_upside",
+                                        "model_family": "markov",
+                                        "direction": "negative",
+                                        "receipt_hash": m_res.get("canonical_hash", "0" * 64),
+                                    })
+                    except Exception:
+                        flags.append("MARKOV_COMPUTATION_FAILED")
+
+                # 3. Bass Diffusion Model
+                if "bass" in model_inputs and isinstance(model_inputs["bass"], dict):
+                    try:
+                        from capital_decision_lab.calculations.bass import simulate_bass_diffusion
+                        b_entry = model_inputs["bass"]
+                        b_params = b_entry.get("parameters", b_entry) if isinstance(b_entry, dict) else {}
+                        M = float(b_params.get("market_potential", b_params.get("M", 10000.0)))
+                        p = float(b_params.get("innovation_rate", b_params.get("p", 0.03)))
+                        q = float(b_params.get("imitation_rate", b_params.get("q", 0.38)))
+                        horizon = int(b_params.get("horizon", 20))
+                        init_adopters = float(b_params.get("initial_adopters", 0.0))
+                        b_res = simulate_bass_diffusion(
+                            market_potential=M,
+                            innovation_rate=p,
+                            imitation_rate=q,
+                            initial_adopters=init_adopters,
+                            horizon=horizon,
+                        )
+                        calculations["bass_result"] = b_res
+                        total_adopters = b_res.get("data", {}).get("cumulative_adopters", {}).get("value")
+                        if total_adopters and isinstance(total_adopters, list) and float(total_adopters[-1]) >= 0.30 * M:
+                            claims.append({
+                                "claim_id": "thesis_upside",
+                                "model_family": "bass",
+                                "direction": "positive",
+                                "receipt_hash": b_res.get("canonical_hash", "0" * 64),
+                            })
+                    except Exception:
+                        flags.append("BASS_COMPUTATION_FAILED")
+
+                # 4. Multi-Armed Bandit Simulation
+                bandit_entry = model_inputs.get("bandit") or model_inputs.get("bandits")
+                if bandit_entry and isinstance(bandit_entry, dict):
+                    try:
+                        from capital_decision_lab.calculations.bandits import simulate_bernoulli_bandit
+                        ban_params = bandit_entry.get("parameters", bandit_entry) if isinstance(bandit_entry, dict) else {}
+                        probs = ban_params.get("arm_probabilities", ban_params.get("probabilities", [0.5, 0.5]))
+                        horizon = int(ban_params.get("horizon", 50))
+                        policy = str(ban_params.get("policy", "adaptive_epsilon"))
+                        k_arms = max(1, len(probs))
+                        init_pulls = max(1, min(10, horizon // (k_arms * 2)))
+                        ban_res = simulate_bernoulli_bandit(
+                            arm_probabilities=probs,
+                            horizon=horizon,
+                            policy=policy,
+                            initial_pulls_per_arm=init_pulls,
+                        )
+                        calculations["bandit_result"] = ban_res
+                        reward = ban_res.get("data", {}).get("total_reward", {}).get("value")
+                        if reward is not None:
+                            claims.append({
+                                "claim_id": "thesis_upside",
+                                "model_family": "bandits",
+                                "direction": "positive",
+                                "receipt_hash": ban_res.get("canonical_hash", "0" * 64),
+                            })
+                    except Exception:
+                        flags.append("BANDIT_COMPUTATION_FAILED")
+
+                # 5. Deterministic Claim Compiler
+                from capital_decision_lab.ensemble.compiler import compile_claim_ensemble
+                if claims:
+                    ensemble_res = compile_claim_ensemble(claims, binding_vetoes=vetoes)
+                    calculations["ensemble_result"] = ensemble_res
+                    calculations["compiled_claims"] = claims
+                    calculations["binding_vetoes"] = vetoes
+                else:
+                    calculations["ensemble_result"] = None
+                    calculations["compiled_claims"] = []
+                    calculations["binding_vetoes"] = vetoes
+
+                if vetoes:
+                    recommendation = "pause" if ("UNTRUSTED_EXTERNAL_INPUT" in vetoes or "SCHEMA_INVALID_MODEL_INPUTS" in vetoes) else "watch"
+                    target = current
+                elif calculations["ensemble_result"] and calculations["ensemble_result"].get("claims", {}).get("robust_positive"):
+                    full = float(_value(analysis, "full_kelly_fraction"))
+                    if full > current:
+                        recommendation = "increase exposure under this assumption set"
+                        target = full
+                    elif full < current:
+                        recommendation = "trim to fractional Kelly"
+                        target = full
+                    else:
+                        recommendation = "hold current exposure"
+                        target = current
+                else:
+                    recommendation = "watch"
+                    target = current
 
     result = {
         "contract_version": "nhi.method_pack_result.v1",
@@ -87,23 +313,54 @@ def run_method_pack(pack_id: str, case_bundle: dict, *, base_result: dict | None
     return result
 
 
+ALLOWED_COMMITTEE_RECOMMENDATIONS = {
+    "avoid margin",
+    "pause",
+    "watch",
+    "hold current exposure",
+    "trim to fractional Kelly",
+    "increase exposure under this assumption set",
+}
+
+COMMITTEE_PRIORITY_ORDER = [
+    "avoid margin",
+    "pause",
+    "watch",
+    "hold current exposure",
+    "trim to fractional Kelly",
+    "increase exposure under this assumption set",
+]
+
+
 def run_committee(pack_ids: list[str], case_bundle: dict) -> dict:
     if not pack_ids:
         raise ValueError("METHOD_PACKS_REQUIRED")
     results = [run_method_pack(pack_id, case_bundle) for pack_id in pack_ids]
     recommendations = [item["data"]["model_implied_recommendation"]["value"] for item in results]
+
+    for rec in recommendations:
+        if not isinstance(rec, str) or rec not in ALLOWED_COMMITTEE_RECOMMENDATIONS:
+            raise ValueError("UNKNOWN_RECOMMENDATION_OUTPUT")
+
     agreement = len(set(recommendations)) == 1
-    priority = ["avoid margin", "pause", "trim to fractional Kelly", "watch", "hold current exposure", "increase exposure under this assumption set"]
-    synthesis = next((item for item in priority if item in recommendations), recommendations[0])
+    synthesis = next((item for item in COMMITTEE_PRIORITY_ORDER if item in recommendations), None)
+    if synthesis is None:
+        raise ValueError("UNKNOWN_RECOMMENDATION_OUTPUT")
+
     binding = next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] == synthesis), results[0]["pack_id"])
     document = {
-        "contract_version": "nhi.committee_result.v1", "committee_id": f"committee_{canonical_sha256([pack_ids, contract_payload_hash(case_bundle)])[:16]}",
+        "contract_version": "nhi.committee_result.v1",
+        "committee_id": f"committee_{canonical_sha256([pack_ids, contract_payload_hash(case_bundle)])[:16]}",
         "pack_results": results,
-        "data": {"agreement": atom(agreement, "calculated"), "disagreement": atom([] if agreement else recommendations, "calculated"),
-                 "strongest_add_case": atom(next((item["pack_id"] for item in results if "increase exposure" in item["data"]["model_implied_recommendation"]["value"]), None), "modeled"),
-                 "strongest_trim_case": atom(next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] in {"avoid margin", "trim to fractional Kelly"}), None), "modeled"),
-                 "strongest_hold_watch_case": atom(next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] in {"hold current exposure", "watch"}), None), "modeled"),
-                 "binding_constraint": atom(binding, "modeled"), "hermes_synthesis": atom(synthesis, "modeled")},
+        "data": {
+            "agreement": atom(agreement, "calculated"),
+            "disagreement": atom([] if agreement else recommendations, "calculated"),
+            "strongest_add_case": atom(next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] == "increase exposure under this assumption set"), None), "modeled"),
+            "strongest_trim_case": atom(next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] in {"avoid margin", "trim to fractional Kelly"}), None), "modeled"),
+            "strongest_hold_watch_case": atom(next((item["pack_id"] for item in results if item["data"]["model_implied_recommendation"]["value"] in {"hold current exposure", "watch", "pause"}), None), "modeled"),
+            "binding_constraint": atom(binding, "modeled"),
+            "hermes_synthesis": atom(synthesis, "modeled"),
+        },
         "required_user_action": "Review the synthesis and explicitly authorize any decision record.",
         "required_user_authorization": True,
     }

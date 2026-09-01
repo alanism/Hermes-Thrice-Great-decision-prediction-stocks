@@ -43,4 +43,17 @@ PACKS = {
         "recommendation_modifiers": ["most_conservative_binding_constraint"], "report_sections": COMMON_SECTIONS,
         "limitations": ["Synthesis does not replace user authorization."],
     },
+    "page": {
+        "display_name": "Scott Page Many-Model",
+        "description": "Multi-model thinking and ensemble claim aggregation process.",
+        "required_inputs": ["portfolio", "thesis"],
+        "preferred_sources": ["filings", "polymarket", "x_twitter", "manual_note"],
+        "workflow_steps": ["power_law", "markov", "bass", "bandit", "claim_compiler", "recommendation"],
+        "mini_loop_rules": ["request_model_inputs"],
+        "calculation_modules": ["power_law", "markov", "bass", "bandits", "compiler"],
+        "rubric_dimensions": ["model_diversity", "tail_risk", "regime_stability", "diffusion_runway"],
+        "recommendation_modifiers": ["heavy_tail_undefined_mean_gate", "supermajority_claim_support", "binding_veto_override"],
+        "report_sections": COMMON_SECTIONS,
+        "limitations": ["Many-model ensemble claims require independent mathematical models and user confirmation."],
+    },
 }

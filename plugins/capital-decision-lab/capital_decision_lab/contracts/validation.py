@@ -50,6 +50,13 @@ _SCHEMA_FILES = {
     "nhi.stock_thesis.v1": "stock-thesis.v1.schema.json",
     "nhi.kill_condition.v1": "kill-condition.v1.schema.json",
     "nhi.thesis_sensitivity_map.v1": "thesis-sensitivity-map.v1.schema.json",
+    "nhi.model_input.v1": "model-input.v1.schema.json",
+    "nhi.model_result.v1": "model-result.v1.schema.json",
+    "nhi.ensemble_result.v1": "ensemble-result.v1.schema.json",
+    "nhi.method_pack.v1": "method-pack.v1.schema.json",
+    "nhi.method_pack_run.v1": "method-pack-run.v1.schema.json",
+    "nhi.method_pack_result.v1": "method-pack-result.v1.schema.json",
+    "nhi.committee_result.v1": "committee-result.v1.schema.json",
 }
 _ATOM_PROPERTIES = {
     "value",
@@ -294,6 +301,7 @@ def validate_contract(document: Any, *, schema_root: Path | None = None) -> list
         "nhi.event_market_signal.v1",
         "nhi.social_evidence_signal.v1",
         "nhi.bayesian_update.v1",
+        "nhi.model_result.v1",
     }:
         data = document.get("data")
         if isinstance(data, dict):

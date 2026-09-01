@@ -23,6 +23,23 @@ def build_recommendation(inputs: dict) -> dict:
     health = inputs["model_health"]["state"]
     quality = clamp(inputs.get("evidence_quality", 0.0))
     reason_codes: list[str] = []
+
+    power_law_result = inputs.get("power_law_result")
+    heavy_tail_veto: str | None = None
+    if isinstance(power_law_result, dict):
+        data = power_law_result.get("data", {})
+        alpha_atom = data.get("alpha", {})
+        prov = alpha_atom.get("provenance_class")
+        if prov == "unavailable":
+            heavy_tail_veto = "HEAVY_TAIL_FIT_UNAVAILABLE"
+        else:
+            alpha_val = alpha_atom.get("value")
+            if isinstance(alpha_val, (int, float)) and not isinstance(alpha_val, bool):
+                if alpha_val <= 2.0:
+                    heavy_tail_veto = "HEAVY_TAIL_UNDEFINED_MEAN"
+                elif 2.0 < alpha_val <= 3.0:
+                    reason_codes.append("HEAVY_TAIL_INFINITE_VARIANCE_ALLOWED")
+
     if not host_evidence_usable:
         kind, target = "pause", current
         reason_codes.append("HOST_EVIDENCE_CONFIRMATION_REQUIRED")
@@ -41,6 +58,9 @@ def build_recommendation(inputs: dict) -> dict:
     elif health == "degrading":
         kind, target = "decrease_exposure", min(current, implied)
         reason_codes.append("MODEL_HEALTH_DEGRADING")
+    elif heavy_tail_veto is not None and implied > current:
+        kind, target = "watch", current
+        reason_codes.append(heavy_tail_veto)
     elif float(inputs.get("evidence_contradiction", 0.0)) >= 0.7:
         kind, target = "watch", current
         reason_codes.append("EVIDENCE_CONTRADICTION")

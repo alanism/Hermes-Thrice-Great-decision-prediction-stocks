@@ -9,7 +9,7 @@ from tests.orchestration.test_analyze_position import response, social_fields, w
 
 
 def test_first_party_method_list_and_core_run() -> None:
-    assert available_method_packs() == ["committee", "contrarian_filings", "core", "mauboussin", "thorp"]
+    assert available_method_packs() == ["committee", "contrarian_filings", "core", "mauboussin", "page", "thorp"]
     result = run_method_pack("core", workflow_case())
     assert result["pack_id"] == "core"
     assert result["required_user_authorization"] is True

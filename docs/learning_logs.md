@@ -260,5 +260,14 @@
 * **Tasks:** T30–T32
 * **Learning:** A green suite is not sufficient when its immutable verifier receipt is stale. Preserve the historical hash, record the current hash as a new release baseline, and use an explicit bounded waiver when prior RED ordering cannot be recreated honestly.
 * **Verifier Orchestration Rule:** Staging tests and repository-wide scanners must execute serially. Running them concurrently can make the scanner correctly observe the staging test's temporary output and create a false release failure.
-* **Current State:** Implementation complete; v0.2.0 release candidate has 338 passing tests. Publication remains pending T33–T34.
+* **Current State:** Superseded by T33–T34 certification and immutable `v0.2.0` publication.
 
+---
+
+### Entry 19: v0.2.0 Immutable Publication and Checkout-Reproducible Receipts
+* **Date:** 2026-09-02
+* **Tasks:** T33–T34
+* **Release Result:** Commit `4e7c223377558f676f69d7b84bf7867345aff23e` was certified with 338 passing tests and published as annotated tag `v0.2.0`. A remote tag clone passed 21 Page/Committee/outcome smokes plus staging, private-data, and install-source validation.
+* **Manifest Learning:** A manifest that hashes working-tree bytes is sensitive to Git checkout line-ending conversion. The LF certification tree produced `77798AED...`; a fresh Windows CRLF checkout produced `D99158C...` for the same 207 selected paths. Record both environment-specific hashes and perform the authoritative release smoke from a fresh remote clone.
+* **Environment Learning:** Resolve and verify the configured test interpreter before a release gate. Do not assume a repository-local `.venv`, the first `python` on `PATH`, or optional PyYAML availability in a zero-runtime-dependency project.
+* **Agent Rule:** Tag only a clean, fully tested release commit; publish branch and tag atomically without force; then clone the remote tag into a disposable directory and verify behavior, privacy, installability, version, refs, and checkout-specific artifact hashes before declaring release complete.

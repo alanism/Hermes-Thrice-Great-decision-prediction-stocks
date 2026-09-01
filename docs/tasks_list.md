@@ -569,8 +569,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Push `main`, push `v0.2.0`, and verify both remote object IDs without force.
   - Fresh-clone `v0.2.0` into a disposable temporary directory; validate the install source and rerun the Page/Committee/outcome release smoke.
   - Record release commit, tag object, remote refs, manifest hash, commands, exit codes, and elapsed times.
-- **Gate:** remote `main` and `refs/tags/v0.2.0` resolve to the approved release; fresh-tag smoke passes; local tree is clean; no secrets or generated staging tree are committed. Failure after publication is patched forward—never hidden by rewriting the tag.
-- **Receipt:** annotated tag `v0.2.0` identifies the immutable release source. Exact local/remote object IDs, command outcomes, elapsed times, and fresh-clone proof are recorded in `docs/governance/PAGE_V020_RELEASE_RECEIPT.md` by the post-publication evidence commit on `main`.
+- **Gate:** `refs/tags/v0.2.0` resolves to the approved release and remote `main` contains it (with only receipt-only descendants permitted); fresh-tag smoke passes; local tree is clean; no secrets or generated staging tree are committed. Failure after publication is patched forward—never hidden by rewriting the tag.
+- **Receipt:** release commit `4e7c223377558f676f69d7b84bf7867345aff23e`; annotated tag object `e339bec6e4f40fc2778d56ee845a74f691f3f263`; remote fresh-clone Page/Committee/outcome, staging, privacy, and install gates passed. Exact commands, exits, elapsed times, refs, and manifest hashes are recorded in `docs/governance/PAGE_V020_RELEASE_RECEIPT.md` by the post-publication evidence commit on `main`.
 
 ## Dependency graph
 

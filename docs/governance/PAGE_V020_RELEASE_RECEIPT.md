@@ -110,4 +110,22 @@ T33 result: `GREEN_VERIFIED` → `DONE`; independent decision: `GO` for publicat
 
 The immutable tag identifies the released source. Exact release/tag objects and the remote fresh-clone proof are recorded in the post-publication receipt on `main`; that evidence commit intentionally follows the release tag and does not move it.
 
+### Post-publication evidence
+
+- Release commit: `4e7c223377558f676f69d7b84bf7867345aff23e`
+- Annotated tag object: `e339bec6e4f40fc2778d56ee845a74f691f3f263`
+- Local tag peel: `v0.2.0^{}` → `4e7c223377558f676f69d7b84bf7867345aff23e`
+- Remote `main` immediately after atomic publication: `4e7c223377558f676f69d7b84bf7867345aff23e`
+- Remote tag object: `refs/tags/v0.2.0` → `e339bec6e4f40fc2778d56ee845a74f691f3f263`
+- Remote tag peel: `refs/tags/v0.2.0^{}` → `4e7c223377558f676f69d7b84bf7867345aff23e`
+- Atomic push: exit `0` in 4.223 seconds; `main` advanced without force and `v0.2.0` was created once
+- Release-commit full suite: 338 passed, exit `0`, 16.069 seconds; `git diff --check` exit `0`; zero worktree entries
+- Local tag-clone smoke: version `0.2.0`; 21 Page CLI/runner/Committee/outcome tests passed in 2.466 seconds; staging/privacy/install exits `0`; 207 files; total 7.150 seconds
+- Remote tag-clone smoke: version `0.2.0`; 21 Page CLI/runner/Committee/outcome tests passed in 2.305 seconds; staging/privacy/install exits `0`; 207 files; clean checkout; total 7.652 seconds
+- Fresh Windows checkout manifest SHA-256: `D99158C5DACBCC40AB96A36F50F7191A854EEED7EBD5129B2FFA6E2A2B1FC2F9`
+
+The certified candidate manifest hash and fresh-checkout manifest hash differ because Git's configured Windows checkout converted 16 indexed-LF text files to CRLF. File selection remained identical at 207 files, and both fresh-clone behavior and privacy/install gates passed. Both hashes are retained; the fresh-checkout hash is the remotely reproducible Windows release receipt.
+
+Verifier corrections were non-product failures: two initial full-suite commands selected Python environments without pytest, and one metadata probe assumed PyYAML despite the project's zero-runtime-dependency contract. The configured release environment and a standard-library version probe were then used successfully. No failed invocation changed repository content or the tag.
+
 T34 result: `GREEN_VERIFIED` → `DONE`; v0.2.0 released.

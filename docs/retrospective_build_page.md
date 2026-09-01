@@ -4,7 +4,7 @@
 **Build Phase:** Scott Page Multi-Model Thinking & Ensemble Integration (Tasks `T00`–`T29`)  
 **Release Sprint:** Evidence repair, independent certification, and publication (Tasks `T30`–`T34`)
 **Date:** September 2, 2026
-**Status:** RELEASE CANDIDATE VERIFIED — PUBLICATION PENDING T33–T34
+**Status:** RELEASED — v0.2.0
 
 ---
 
@@ -150,7 +150,7 @@ Following Codex's read-only audit, the Engineering Council addressed all 6 ident
 | **T31** | Independent Release-Suite Verification | Ryan Lopopolo / Nicholas Carlini | DONE | 43 targeted + 338 full tests; five adversarial probes stopped before calculation |
 | **T32** | Version & Documentation Reconciliation | Raphael Schaad / Ryan Lopopolo | DONE | Version `0.2.0`; all authoritative counts reconciled to 338 |
 | **T33** | Release-Candidate Certification | Simon Willison / Mitchell Hashimoto + Ryan Lopopolo | DONE | 338 tests; 207-file staged profile; privacy/install/CLI gates passed |
-| **T34** | Publish & Fresh-Tag Smoke | Mitchell Hashimoto / Ryan Lopopolo + Bret Taylor | PENDING | Awaiting immutable `v0.2.0` publication |
+| **T34** | Publish & Fresh-Tag Smoke | Mitchell Hashimoto / Ryan Lopopolo + Bret Taylor | DONE | Annotated `v0.2.0`; remote refs and fresh-clone proof recorded in release receipt |
 
 ---
 
@@ -182,4 +182,4 @@ Following Codex's read-only audit, the Engineering Council addressed all 6 ident
 - **Lockfile Integrity:** `pyproject.toml`, `requirements-dev.lock`, `requirements-runtime.lock` byte-identical to baseline.
 - **Distribution Integrity:** `scripts/build_profile_staging.py` verified; `dlc-page.md` staged and selected.
 - **Zero External Dependencies / Zero Egress:** Confirmed standard-library-only execution.
-- **Current Verdict:** RELEASE CANDIDATE VERIFIED. Publication remains blocked until T33 certification and T34 remote tag/fresh-clone smoke pass.
+- **Current Verdict:** RELEASED as immutable tag `v0.2.0`. T33 certified the 338-test candidate and T34 completed publication plus remote fresh-clone validation; exact object IDs and smoke receipts are recorded in `docs/governance/PAGE_V020_RELEASE_RECEIPT.md`.

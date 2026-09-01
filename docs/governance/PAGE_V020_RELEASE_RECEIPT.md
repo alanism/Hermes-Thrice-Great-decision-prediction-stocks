@@ -1,6 +1,6 @@
 # Page v0.2.0 Release Receipt
 
-Status: T33 release candidate certified; T34 publication pending
+Status: RELEASED — v0.2.0
 Release branch: `main`
 Release version/tag: `0.2.0` / `v0.2.0`
 Receipt owner: root release planner
@@ -100,4 +100,14 @@ T33 result: `GREEN_VERIFIED` → `DONE`; independent decision: `GO` for publicat
 
 ## T34 — Publication and fresh-tag smoke
 
-Pending.
+- Model: `sol`
+- Primary hero: Mitchell Hashimoto
+- Independent verifiers: Ryan Lopopolo and Bret Taylor
+- Release source: the commit peeled from annotated tag `v0.2.0`
+- Publication method: ordinary fast-forward push of `main` plus one new annotated tag; no force, tag movement, deletion, or history rewrite
+- Candidate manifest SHA-256: `77798AED40607A89F05B35799F0935CB354FF1CB1C52893485E3A77C2D660D03`
+- Required post-tag proof: remote branch/tag object IDs, fresh-clone install-source validation, Page/Committee/outcome smoke, and clean local tree
+
+The immutable tag identifies the released source. Exact release/tag objects and the remote fresh-clone proof are recorded in the post-publication receipt on `main`; that evidence commit intentionally follows the release tag and does not move it.
+
+T34 result: `GREEN_VERIFIED` → `DONE`; v0.2.0 released.

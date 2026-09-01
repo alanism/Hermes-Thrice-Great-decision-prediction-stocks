@@ -3,7 +3,7 @@
 Authoritative plan: [`docs/build-plan.md`](build-plan.md)  
 State owner: the executing root planner  
 Executing agent: root release planner
-Build status: RELEASE CANDIDATE CERTIFIED — T30-T33 DONE; T34 READY
+Build status: RELEASED — v0.2.0; T30-T34 DONE
 Last updated: 2026-09-02
 
 This is the execution queue. T00-T29 describe the completed implementation. T30-T34 are the authoritative ship-now release sprint and execute serially.
@@ -64,7 +64,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ## Queue summary
 
-> **Release Governor Notice (2026-09-02):** T00-T29 are implementation-complete. T30-T32 repaired test lineage, froze the 338-test release suite, and reconciled version `0.2.0`. T33 certification and T34 publication remain.
+> **Release Governor Notice (2026-09-02):** T00-T29 are implementation-complete. T30-T34 repaired test lineage, froze and independently verified the 338-test release suite, reconciled version `0.2.0`, certified the candidate, and published the immutable release.
 
 | ID | State | Task | Depends | Intelligence / model | Primary hero | Independent verifier |
 |---|---|---|---|---|---|---|
@@ -102,7 +102,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 | T31 | DONE | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
 | T32 | DONE | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
 | T33 | DONE | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
-| T34 | READY | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
+| T34 | DONE | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
 
 ## Detailed tasks
 
@@ -555,7 +555,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ### T34 — Commit, tag, publish, and smoke-test v0.2.0
 
-- **State:** `READY`
+- **State:** `DONE`
 - **Depends:** T33.
 - **Difficulty / intelligence:** I5 — externally visible, difficult-to-reverse release operation with rollback judgment.
 - **Model:** `sol`; publication is not delegated to a lower-intelligence model.
@@ -570,6 +570,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Fresh-clone `v0.2.0` into a disposable temporary directory; validate the install source and rerun the Page/Committee/outcome release smoke.
   - Record release commit, tag object, remote refs, manifest hash, commands, exit codes, and elapsed times.
 - **Gate:** remote `main` and `refs/tags/v0.2.0` resolve to the approved release; fresh-tag smoke passes; local tree is clean; no secrets or generated staging tree are committed. Failure after publication is patched forward—never hidden by rewriting the tag.
+- **Receipt:** annotated tag `v0.2.0` identifies the immutable release source. Exact local/remote object IDs, command outcomes, elapsed times, and fresh-clone proof are recorded in `docs/governance/PAGE_V020_RELEASE_RECEIPT.md` by the post-publication evidence commit on `main`.
 
 ## Dependency graph
 

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complexity Science & Many-Model Thinking — Owner's Manual</title>
+  
+  <!-- Fonts: Inter 300/400 + Playfair/Syne for high-fashion display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for math typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <style>
+    /* ==========================================================================
+       Creative Giants Design Tokens
+       ========================================================================== */
+    :root {
+      --color-bone-white: #fffef7;
+      --color-ink-black: #000000;
+      --color-graphite: #666666;
+      --color-ash: #aaaaaa;
+      --color-charcoal-scale: #4d4c4a;
+      --color-magenta-bloom: #8a0467;
+      --color-forest-teal: #03624c;
+      --color-powder-blue: #a5c8eb;
+      --color-candy-pink: #ffacea;
+      --color-mint-wash: #a5ebd6;
+      --color-navy-ink: #101731;
+      --color-signal-yellow: #ffd001;
+
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --spacing-8: 8px;
+      --spacing-16: 16px;
+      --spacing-24: 24px;
+      --spacing-32: 32px;
+      --spacing-48: 48px;
+      --spacing-64: 64px;
+      --spacing-80: 80px;
+      --spacing-112: 112px;
+
+      --radius-pill: 1440px;
+      --radius-card: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-bone-white);
+      color: var(--color-ink-black);
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.018em;
+      -webkit-font-smoothing: antialiased;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Reading Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--color-ink-black);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* Header Chrome */
+    header {
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--color-ash);
+      background-color: var(--color-bone-white);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      background-color: var(--color-ink-black);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-bone-white);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .header-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-graphite);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill-btn {
+      background-color: var(--color-ink-black);
+      color: var(--color-bone-white);
+      border-radius: var(--radius-pill);
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--color-ink-black);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .pill-btn:hover {
+      background-color: transparent;
+      color: var(--color-ink-black);
+    }
+
+    .pill-btn-outline {
+      background-color: transparent;
+      color: var(--color-ink-black);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--color-ash);
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn-outline:hover {
+      border-color: var(--color-ink-black);
+    }
+
+    /* Layout Container */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Hero Poster Section */
+    .hero-poster {
+      padding: 80px 0 64px 0;
+      border-bottom: 1px solid var(--color-ash);
+    }
+
+    .hero-meta {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-magenta-bloom);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-pill {
+      background-color: var(--color-signal-yellow);
+      color: var(--color-ink-black);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .display-headline {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--color-ink-black);
+      margin-bottom: 32px;
+      text-wrap: balance;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--color-graphite);
+      max-width: 820px;
+      margin-bottom: 40px;
+    }
+
+    .hero-authorship {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+      font-size: 14px;
+      color: var(--color-graphite);
+      padding-top: 24px;
+      border-top: 1px solid var(--color-bone-white);
+    }
+
+    .author-tag {
+      font-weight: 500;
+      color: var(--color-ink-black);
+    }
+
+    /* Main Grid Layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 64px;
+      padding: 64px 0 112px 0;
+    }
+
+    /* Sticky Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-graphite);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      color: var(--color-graphite);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      display: block;
+      line-height: 1.4;
+      padding: 4px 0;
+      border-left: 2px solid transparent;
+      padding-left: 10px;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-ink-black);
+      border-left-color: var(--color-ink-black);
+      font-weight: 500;
+    }
+
+    /* Section Styling */
+    .section-block {
+      margin-bottom: 80px;
+      scroll-margin-top: 120px;
+    }
+
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-forest-teal);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--color-ink-black);
+      margin-bottom: 24px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #222222;
+      margin-bottom: 20px;
+    }
+
+    p.lead {
+      font-size: 19px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--color-ink-black);
+      margin-bottom: 24px;
+    }
+
+    /* Creative Giants Chromatic Accent Cards (0px radius) */
+    .card-navy {
+      background-color: var(--color-navy-ink);
+      color: var(--color-bone-white);
+      padding: 36px;
+      border-radius: var(--radius-card);
+      margin: 32px 0;
+    }
+
+    .card-navy p, .card-navy h3, .card-navy h4 {
+      color: var(--color-bone-white);
+    }
+
+    .card-mint {
+      background-color: var(--color-mint-wash);
+      color: var(--color-ink-black);
+      padding: 32px;
+      border-radius: var(--radius-card);
+      margin: 32px 0;
+      border-left: 4px solid var(--color-forest-teal);
+    }
+
+    .card-pink {
+      background-color: var(--color-candy-pink);
+      color: var(--color-ink-black);
+      padding: 32px;
+      border-radius: var(--radius-card);
+      margin: 32px 0;
+      border-left: 4px solid var(--color-magenta-bloom);
+    }
+
+    .card-powder {
+      background-color: var(--color-powder-blue);
+      color: var(--color-ink-black);
+      padding: 32px;
+      border-radius: var(--radius-card);
+      margin: 32px 0;
+    }
+
+    .card-white {
+      background-color: #ffffff;
+      border: 1px solid var(--color-ash);
+      padding: 32px;
+      border-radius: var(--radius-card);
+      margin: 32px 0;
+    }
+
+    /* Model Grid (4 Columns or 2x2) */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin: 32px 0;
+    }
+
+    .model-card {
+      background: #ffffff;
+      border: 1px solid var(--color-ash);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s ease;
+    }
+
+    .model-card:hover {
+      border-color: var(--color-ink-black);
+    }
+
+    .model-card-header {
+      margin-bottom: 16px;
+    }
+
+    .model-number {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-graphite);
+      margin-bottom: 8px;
+    }
+
+    .model-name {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .model-role {
+      font-size: 13px;
+      color: var(--color-graphite);
+      line-height: 1.4;
+    }
+
+    .model-formula {
+      background-color: var(--color-bone-white);
+      border: 1px solid #e5e5dc;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 28px 0;
+      border: 1px solid var(--color-ash);
+      border-radius: var(--radius-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    th {
+      background-color: var(--color-bone-white);
+      color: var(--color-ink-black);
+      font-weight: 600;
+      text-align: left;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--color-ash);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #eeeeee;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--color-navy-ink);
+      color: #e6edf3;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 24px;
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background-color: #f0efe8;
+      padding: 2px 6px;
+      border-radius: 2px;
+      color: var(--color-ink-black);
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Recommendation Hierarchy Stack */
+    .rec-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .rec-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 20px;
+      padding: 18px 24px;
+      background: #ffffff;
+      border: 1px solid var(--color-ash);
+      border-radius: var(--radius-card);
+      align-items: center;
+    }
+
+    .rec-pill {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      text-align: center;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .rec-avoid { background-color: #ffe5e5; color: #b30000; border: 1px solid #ff9999; }
+    .rec-pause { background-color: #fff2cc; color: #8a6d00; border: 1px solid #ffd966; }
+    .rec-watch { background-color: #e6f2ff; color: #004d99; border: 1px solid #99ccff; }
+    .rec-hold { background-color: #f0f0f0; color: #444444; border: 1px solid #cccccc; }
+    .rec-trim { background-color: #fbe6ff; color: #660066; border: 1px solid #df80ff; }
+    .rec-increase { background-color: #e6ffec; color: #006622; border: 1px solid #80ff9f; }
+
+    /* Interactive Calculator / Simulation Box */
+    .sim-box {
+      background: #ffffff;
+      border: 2px solid var(--color-ink-black);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      margin: 36px 0;
+    }
+
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--color-ash);
+    }
+
+    .sim-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-graphite);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--color-ink-black);
+    }
+
+    .sim-output {
+      background: var(--color-bone-white);
+      border: 1px solid var(--color-ash);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      border-radius: var(--radius-card);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--color-ash);
+      padding: 64px 32px;
+      background-color: var(--color-bone-white);
+    }
+
+    .footer-grid {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-left {
+      font-size: 13px;
+      color: var(--color-graphite);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .sidebar {
+        display: none;
+      }
+      .rec-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .sim-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="progress-bar"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo-mark">H3</div>
+      <div class="header-eyebrow">Hermes Thrice Great // Capital Decision Lab</div>
+    </div>
+    <div class="header-right">
+      <a href="#models" class="pill-btn-outline">Model Engines</a>
+      <a href="#jury" class="pill-btn-outline">Claim Compiler</a>
+      <a href="#contracts" class="pill-btn">6-String Contract</a>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Hero Poster Section -->
+    <section class="hero-poster">
+      <div class="hero-meta">
+        <span>Complexity Science & Many-Model Thinking</span>
+        <span class="badge-pill">Version 1.0 • Verified</span>
+      </div>
+      
+      <h1 class="display-headline">The Complexity Science & Many-Model Thinking Owner's Manual</h1>
+      
+      <p class="hero-subtitle">
+        A plain-English operator's guide to multi-model ensembles, heavy-tail moment vetoes, and capital allocation in Hermes Thrice Great.
+      </p>
+
+      <div class="hero-authorship">
+        <div>Written in <span class="author-tag">Derek Thompson's Journalistic Voice</span></div>
+        <div>•</div>
+        <div>Theoretical Foundation: <span class="author-tag">Scott E. Page (The Model Thinker)</span></div>
+        <div>•</div>
+        <div>Standard Library Only: <span class="author-tag">Zero Egress Verified</span></div>
+      </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <div class="main-layout">
+      
+      <!-- Sticky Navigation Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-title">Table of Contents</div>
+        <ul class="nav-list">
+          <li><a href="#overture" class="nav-link">1. The Overture</a></li>
+          <li><a href="#philosophy" class="nav-link">2. Diversity Trumps Ability</a></li>
+          <li><a href="#models" class="nav-link">3. The 4 Cognitive Engines</a></li>
+          <li><a href="#power-law" class="nav-link" style="padding-left: 20px;">• Power-Law MLE</a></li>
+          <li><a href="#markov" class="nav-link" style="padding-left: 20px;">• Markov Chains</a></li>
+          <li><a href="#bass" class="nav-link" style="padding-left: 20px;">• Bass Diffusion</a></li>
+          <li><a href="#bandits" class="nav-link" style="padding-left: 20px;">• Multi-Armed Bandits</a></li>
+          <li><a href="#jury" class="nav-link">4. The Claim Compiler</a></li>
+          <li><a href="#contracts" class="nav-link">5. The 6-String Contract</a></li>
+          <li><a href="#playbook" class="nav-link">6. Operator's Playbook</a></li>
+          <li><a href="#threat" class="nav-link">7. Adversarial Threat Model</a></li>
+          <li><a href="#epilogue" class="nav-link">8. Epilogue</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Article Body -->
+      <main class="content-body">
+        
+        <!-- 1. The Overture -->
+        <section id="overture" class="section-block">
+          <div class="section-eyebrow">Chapter 01</div>
+          <h2 class="section-title">The Overture: Why Smart People Blow Up in Clean Markets</h2>
+          
+          <p class="lead">
+            Every catastrophic failure in financial history shares the same quiet prelude: a single, brilliant spreadsheet.
+          </p>
+
+          <p>
+            In the late 1990s, the Nobel laureates of Long-Term Capital Management built the most sophisticated mathematical apparatus Wall Street had ever seen. Their models were intricate. Their pedigree was unimpeachable. Their historical backtests looked like smooth, upward-sloping staircases to heaven.
+          </p>
+
+          <p>
+            And then, Russia defaulted on its domestic debt, liquidity vanished overnight, and the fund vaporized in five weeks.
+          </p>
+
+          <div class="card-pink">
+            <h4 style="font-size: 18px; margin-bottom: 8px; font-weight: 600;">The Single-Model Trap</h4>
+            <p style="margin-bottom: 0;">
+              Why did they blow up? Because they fell in love with a single lens. They treated the financial world as if it were a mild, bell-curved physics problem where extremes are rare and predictable. They forgot that markets are not clocks. Markets are ecologies—complex, adaptive, reflexively interconnected webs of human fear, leverage, and non-linear surprise.
+            </p>
+          </div>
+
+          <p>
+            When you view a high-stakes investment thesis through only one mathematical model—whether it’s a discounted cash flow, a binary Kelly criterion, or a momentum chart—you are not measuring reality. You are measuring the blind spot of that single framework.
+          </p>
+          
+          <p>
+            The <strong>Complexity Science & Many-Model Thinking Engine</strong> inside Hermes Thrice Great was built to destroy that blind spot. Grounded in the research of University of Michigan theorist Scott E. Page (<em>The Model Thinker</em>, <em>The Difference</em>), it subjects every portfolio thesis to an adversarial jury of four mathematically independent model families.
+          </p>
+        </section>
+
+        <!-- 2. Diversity Trumps Ability -->
+        <section id="philosophy" class="section-block">
+          <div class="section-eyebrow">Chapter 02</div>
+          <h2 class="section-title">The Core Philosophy: Diversity Trumps Ability</h2>
+
+          <p class="lead">
+            Here is an intuitive paradox: If you assemble a committee of the five smartest macro analysts in the world who all went to the same business school, read the same financial papers, and run the same DCF models, their collective forecast is often <em>worse</em> than a committee composed of three moderately clever analysts who use radically different analytical toolkits.
+          </p>
+
+          <p>
+            Scott Page formalized this insight into a mathematical theorem:
+          </p>
+
+          <div class="card-navy" style="text-align: center; padding: 28px;">
+            <div style="font-size: 20px; font-family: var(--font-display); font-weight: 300; margin-bottom: 8px;">
+              $$	ext{Collective Error} = 	ext{Average Individual Error} - 	ext{Prediction Diversity}$$
+            </div>
+            <div style="font-size: 13px; color: var(--color-powder-blue);">The Many-Model Diversity Theorem (Scott E. Page)</div>
+          </div>
+
+          <p>
+            Read that equation carefully. Collective prediction error does not just decrease when individual models become smarter; it decreases directly in proportion to how <strong>diverse</strong> the models are from one another.
+          </p>
+
+          <div class="card-mint">
+            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">The Three Invariant Laws of Hermes Thrice Great:</h4>
+            <ol style="padding-left: 20px; line-height: 1.7; font-size: 15px;">
+              <li><strong>The Four-Family Separation:</strong> Every analysis must interrogate the problem across statistical extreme value theory (Power Laws), dynamic state transitions (Markov Chains), macroscopic epidemiological spread (Bass Diffusion), and algorithmic decision policy (Multi-Armed Bandits).</li>
+              <li><strong>The Two-Family Minimum:</strong> No investment claim can ever be classified as <code>robust_positive</code> unless it is corroborated by at least two independent model families.</li>
+              <li><strong>The Binding Moment Safety Veto:</strong> Mathematical consensus never overrules physics. If a power-law diagnostic discovers an undefined mathematical mean ($lpha \le 2.0$), the system triggers an emergency safety veto that freezes target exposure.</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 3. The 4 Cognitive Engines -->
+        <section id="models" class="section-block">
+          <div class="section-eyebrow">Chapter 03</div>
+          <h2 class="section-title">The Four Cognitive Engines</h2>
+
+          <p class="lead">
+            Hermes does not rely on a monolithic black box. It dispatches four purpose-built mathematical engines, each interrogating a distinct dimension of portfolio risk and return.
+          </p>
+
+          <!-- Model 1: Power Law -->
+          <div id="power-law" class="card-white" style="margin-top: 40px;">
+            <div class="model-number">ENGINE 01 // STATISTICAL EXTREMES</div>
+            <h3 class="model-name">Continuous Power Laws & Heavy-Tail Moment Vetoes</h3>
+            <p>
+              Most financial software lives in <em>Mediocristan</em> (normal bell curves). Modern tech equities, semiconductor cycles, and venture outcomes live in <em>Extremistan</em> (power laws where a single event dominates the entire sample).
+            </p>
+            
+            <div class="model-formula">
+              $$\hat{lpha} = 1 + n \left[ \sum_{i=1}^n \ln\left(rac{x_i}{x_{\min}}ight) ight]^{-1}$$
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Alpha Range</th>
+                    <th>Statistical Reality</th>
+                    <th>Hermes System Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>$lpha \le 1.0$</td>
+                    <td>Non-normalizable distribution. Impossible in physical reality.</td>
+                    <td><strong>Hard Reject:</strong> Pipeline halts with <code>INVALID_POWER_LAW_SAMPLE</code>.</td>
+                  </tr>
+                  <tr>
+                    <td>$1.0 < lpha \le 2.0$</td>
+                    <td><strong>Undefined Mean ($E[X] = \infty$).</strong> Sample average never converges.</td>
+                    <td><strong>Binding Veto:</strong> Emits <code>HEAVY_TAIL_UNDEFINED_MEAN</code>. Forces recommendation to <code>watch</code> or <code>pause</code>.</td>
+                  </tr>
+                  <tr>
+                    <td>$2.0 < lpha \le 3.0$</td>
+                    <td><strong>Finite Mean, Infinite Variance.</strong> High volatility tail.</td>
+                    <td><strong>Warning Flag:</strong> Emits <code>HEAVY_TAIL_INFINITE_VARIANCE_ALLOWED</code>. Fractional Kelly haircut applied.</td>
+                  </tr>
+                  <tr>
+                    <td>$lpha > 3.0$</td>
+                    <td><strong>Finite Mean & Variance.</strong> Standard thin-tailed regime.</td>
+                    <td><strong>Clean Pass:</strong> Standard Kelly exposure sizing unlocked.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style="font-size: 14px; color: var(--color-graphite);">
+              <strong>When to use:</strong> High-multiple semiconductor and AI infrastructure equities, biotech binary trials, and asymmetrical venture-backed stock bets.
+            </p>
+          </div>
+
+          <!-- Model 2: Markov -->
+          <div id="markov" class="card-white" style="margin-top: 40px;">
+            <div class="model-number">ENGINE 02 // REGIME DYNAMICS</div>
+            <h3 class="model-name">Markov Transition Chains & Ergodic Stationary Reversion</h3>
+            <p>
+              Investors suffer from violent recency bias. A Markov chain asks a colder, more disciplined question: <em>If this business transitions between 'Struggling Legacy' and 'Turnaround Catalyst' according to historical probabilities, where will it spend 80% of its time over the next decade?</em>
+            </p>
+            
+            <div class="model-formula">
+              $$\pi_{k+1} = \pi_k P \quad \implies \quad \pi^* P = \pi^* \quad \left(\sum \pi_i = 1ight)$$
+            </div>
+
+            <p>
+              Hermes verifies ergodicity via Breadth-First Search (BFS) reachability for <strong>irreducibility</strong> and greatest common divisor (GCD) of cycle lengths for <strong>aperiodicity</strong> before computing stationary equilibrium.
+            </p>
+
+            <p style="font-size: 14px; color: var(--color-graphite);">
+              <strong>When to use:</strong> Turnaround theses, cyclical commodity stocks, SaaS retention cohorts, and macroeconomic liquidity regime transitions.
+            </p>
+          </div>
+
+          <!-- Model 3: Bass -->
+          <div id="bass" class="card-white" style="margin-top: 40px;">
+            <div class="model-number">ENGINE 03 // DIFFUSION & ADOPTION</div>
+            <h3 class="model-name">Bass Discrete Diffusion & Product Adoption Ceilings</h3>
+            <p>
+              Every revolutionary product feels infinite in year two. Frank Bass proved that technological diffusion follows an S-curve governed by Innovators ($p$) and Imitators ($q$) bounded by a hard market ceiling ($M$).
+            </p>
+            
+            <div class="model-formula">
+              $$\Delta N(t) = \left[ p + q rac{N(t)}{M} ight] ig( M - N(t) ig)$$
+            </div>
+
+            <p style="font-size: 14px; color: var(--color-graphite);">
+              <strong>When to use:</strong> Hardware adoption cycles (EVs, headsets, edge AI), SaaS TAM penetration, and market saturation diagnostics.
+            </p>
+          </div>
+
+          <!-- Model 4: Bandits -->
+          <div id="bandits" class="card-white" style="margin-top: 40px;">
+            <div class="model-number">ENGINE 04 // DECISION POLICY</div>
+            <h3 class="model-name">Multi-Armed Bandits & Exploration Under Uncertainty</h3>
+            <p>
+              Every capital allocator faces the explore-vs-exploit dilemma: when to double down on the current top pick (exploitation) versus probing alternative theses (exploration).
+            </p>
+            
+            <div class="model-formula">
+              $$\epsilon_t = \max\left(\epsilon_{\min}, \; rac{\epsilon_0}{\sqrt{t + 1}}ight)$$
+            </div>
+
+            <p style="font-size: 14px; color: var(--color-graphite);">
+              <strong>When to use:</strong> Staging capital across venture baskets, research budget allocation, and asset rotation under uncertainty.
+            </p>
+          </div>
+
+          <!-- Interactive Power Law & Moment Simulator -->
+          <div class="sim-box">
+            <div class="sim-header">
+              <div class="sim-title">Interactive Tail-Risk Moment Explorer</div>
+              <span class="badge-pill">Live Diagnostic</span>
+            </div>
+
+            <div class="sim-controls">
+              <div class="control-group">
+                <label class="control-label" id="alpha-val-label">Tail Scaling Exponent (Alpha): 1.85</label>
+                <input type="range" id="alpha-slider" min="0.8" max="4.0" step="0.05" value="1.85" oninput="updateSimulator()">
+              </div>
+              <div class="control-group">
+                <label class="control-label" id="xmin-val-label">Lower Cutoff (Xmin): $10.00</label>
+                <input type="range" id="xmin-slider" min="1.0" max="50.0" step="1.0" value="10.0" oninput="updateSimulator()">
+              </div>
+            </div>
+
+            <div class="sim-output" id="sim-result-box">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 4. The Claim Compiler -->
+        <section id="jury" class="section-block">
+          <div class="section-eyebrow">Chapter 04</div>
+          <h2 class="section-title">The Jury: Deterministic Claim Compilation</h2>
+
+          <p class="lead">
+            What happens when models disagree? In human committees, the loudest voice wins. In Hermes Thrice Great, conflicting signals pass through the <strong>Deterministic Claim Compiler</strong>.
+          </p>
+
+          <div class="card-powder">
+            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">The Invariant Rules of the Jury:</h4>
+            <ul style="padding-left: 20px; line-height: 1.7; font-size: 15px;">
+              <li><strong>Correlation Collapse:</strong> Multiple runs of the same model family collapse into exactly one correlation group vote.</li>
+              <li><strong>Two-Family Rule:</strong> A claim cannot be <code>robust_positive</code> without corroboration from $\ge 2$ independent mathematical families.</li>
+              <li><strong>2/3 Supermajority Threshold:</strong> Positive votes must meet or exceed $\max(2, \lceil 2K/3 ceil)$.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 5. The 6-String Contract -->
+        <section id="contracts" class="section-block">
+          <div class="section-eyebrow">Chapter 05</div>
+          <h2 class="section-title">The Command Center: The Six-String Recommendation Contract</h2>
+
+          <p class="lead">
+            To eliminate ambiguity between machine analysis and human action, Hermes enforces a closed six-string recommendation vocabulary, ranked in strict financial safety order:
+          </p>
+
+          <div class="rec-stack">
+            <div class="rec-item">
+              <div><span class="rec-pill rec-avoid">avoid margin</span></div>
+              <div style="font-size: 14px;"><strong>Absolute Circuit Breaker:</strong> Liquidation buffer breach or maintenance margin danger detected. Immediately eliminate leverage.</div>
+            </div>
+
+            <div class="rec-item">
+              <div><span class="rec-pill rec-pause">pause</span></div>
+              <div style="font-size: 14px;"><strong>Quarantine & Verification Gate:</strong> Untrusted external input detected or schema validation rejected. Halt automated execution.</div>
+            </div>
+
+            <div class="rec-item">
+              <div><span class="rec-pill rec-watch">watch</span></div>
+              <div style="font-size: 14px;"><strong>Structural Hesitation:</strong> Heavy-tail undefined mean ($lpha \le 2.0$) or negative ensemble consensus. Do not increase exposure.</div>
+            </div>
+
+            <div class="rec-item">
+              <div><span class="rec-pill rec-hold">hold current exposure</span></div>
+              <div style="font-size: 14px;"><strong>Steady-State Target:</strong> Thesis is validated and portfolio is exactly at the optimal fractional Kelly weight.</div>
+            </div>
+
+            <div class="rec-item">
+              <div><span class="rec-pill rec-trim">trim to fractional Kelly</span></div>
+              <div style="font-size: 14px;"><strong>Harvest & De-risk:</strong> Position appreciation exceeds mathematical risk allocation. Harvest excess capital.</div>
+            </div>
+
+            <div class="rec-item">
+              <div><span class="rec-pill rec-increase">increase exposure...</span></div>
+              <div style="font-size: 14px;"><strong>High-Conviction Green Light:</strong> Two-family supermajority confirmed, safety clear, and position below Kelly target.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Operator's Playbook -->
+        <section id="playbook" class="section-block">
+          <div class="section-eyebrow">Chapter 06</div>
+          <h2 class="section-title">The Operator's Playbook: CLI Execution</h2>
+
+          <p>
+            Run Many-Model diagnostics and multi-method committee deliberations directly through the Hermes command-line interface:
+          </p>
+
+          <pre><code># 1. Execute Scott Page Many-Model Pack on a Thesis Bundle
+capital method run --pack page --case path/to/thesis_bundle.json
+
+# 2. Run Deliberative Committee (Thorp Kelly + Page Many-Model)
+capital committee run --packs thorp,page --case path/to/thesis_bundle.json</code></pre>
+        </section>
+
+        <!-- 7. Adversarial Threat Model -->
+        <section id="threat" class="section-block">
+          <div class="section-eyebrow">Chapter 07</div>
+          <h2 class="section-title">The Threat Model: Why Untrusted Data Gets Quarantined</h2>
+
+          <p>
+            In modern agentic AI systems, prompt injection is the new buffer overflow. Hermes implements the <strong>Carlini / Willison Adversarial Isolation Protocol</strong>:
+          </p>
+
+          <div class="card-navy">
+            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Physical Boundary Rules:</h4>
+            <ul style="padding-left: 20px; line-height: 1.7; font-size: 14px;">
+              <li>Every input must declare an explicit <code>input_trust_class</code> (<code>user_verified</code>, <code>verified_local</code>, or <code>synthetic_test</code>).</li>
+              <li>Inputs labeled <code>untrusted_external</code> are halted with <code>UNTRUSTED_EXTERNAL_INPUT</code> and zero math execution.</li>
+              <li>Structured output compiler severs LLM generation from final portfolio contracts.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 8. Epilogue -->
+        <section id="epilogue" class="section-block">
+          <div class="section-eyebrow">Chapter 08</div>
+          <h2 class="section-title">Epilogue: The Humility of the Ensemble</h2>
+
+          <p class="lead">
+            There is an old parable about six blind men touching an elephant. One touches the trunk and declares it a snake. Another touches the leg and calls it a tree.
+          </p>
+
+          <p>
+            Every mathematical model we invent in financial economics is a blind man touching a single part of the beast. The Kelly criterion feels the odds. The power law feels the tail. The Markov chain feels the regime. The Bass curve feels the adoption boundary.
+          </p>
+
+          <p>
+            True mastery in capital allocation is not about finding the one "perfect" model that explains everything. That model does not exist. True mastery is about having the humility to convene the jury—to listen to all four models simultaneously, to respect their disagreements, to heed their safety vetoes, and to act decisively only when independent lines of evidence converge.
+          </p>
+
+          <div class="card-mint" style="text-align: center; padding: 32px;">
+            <div style="font-size: 18px; font-family: var(--font-display); font-weight: 300;">
+              "Complexity is not chaos. Complexity is an ecology to be understood through diverse lenses."
+            </div>
+            <div style="font-size: 13px; color: var(--color-forest-teal); margin-top: 8px;">— Hermes Thrice Great NHI</div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-left">
+        <strong>Hermes Thrice Great NHI</strong> • Capital Decision Lab • Scott Page Many-Model Engine
+      </div>
+      <div>
+        <a href="#overture" class="pill-btn-outline" style="font-size: 12px;">Back to Top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Live Tail Simulator Script -->
+  <script>
+    function updateSimulator() {
+      const alpha = parseFloat(document.getElementById('alpha-slider').value);
+      const xmin = parseFloat(document.getElementById('xmin-slider').value);
+
+      document.getElementById('alpha-val-label').innerText = `Tail Scaling Exponent (Alpha): ${alpha.toFixed(2)}`;
+      document.getElementById('xmin-val-label').innerText = `Lower Cutoff (Xmin): $${xmin.toFixed(2)}`;
+
+      const out = document.getElementById('sim-result-box');
+      let statusHtml = '';
+
+      if (alpha <= 1.0) {
+        statusHtml = `
+          <div style="color: #b30000; font-weight: 700;">[CRITICAL REJECT] INVALID_POWER_LAW_SAMPLE</div>
+          <div style="margin-top: 6px; color: var(--color-graphite);">Alpha <= 1.0 represents a non-normalizable mathematical anomaly. Execution rejected.</div>
+        `;
+      } else if (alpha <= 2.0) {
+        statusHtml = `
+          <div style="color: #b30000; font-weight: 700;">[BINDING MOMENT VETO] HEAVY_TAIL_UNDEFINED_MEAN</div>
+          <div style="margin-top: 6px; color: var(--color-ink-black);">Expected value E[X] = infinity. Sample mean will never converge.</div>
+          <div style="margin-top: 8px;"><strong>System Recommendation:</strong> <span class="rec-pill rec-watch">watch</span> (Exposure increase blocked)</div>
+        `;
+      } else if (alpha <= 3.0) {
+        const mean = (alpha * xmin) / (alpha - 1.0);
+        statusHtml = `
+          <div style="color: #8a6d00; font-weight: 700;">[WARNING] HEAVY_TAIL_INFINITE_VARIANCE_ALLOWED</div>
+          <div style="margin-top: 6px; color: var(--color-ink-black);">Theoretical Mean: $${mean.toFixed(2)} | Theoretical Variance: Infinity</div>
+          <div style="margin-top: 8px;"><strong>System Recommendation:</strong> <span class="rec-pill rec-trim">trim to fractional Kelly</span> (50% volatility haircut applied)</div>
+        `;
+      } else {
+        const mean = (alpha * xmin) / (alpha - 1.0);
+        const variance = (alpha * Math.pow(xmin, 2)) / (Math.pow(alpha - 1.0, 2) * (alpha - 2.0));
+        statusHtml = `
+          <div style="color: #006622; font-weight: 700;">[CLEAN PASS] FINITE MEAN & FINITE VARIANCE</div>
+          <div style="margin-top: 6px; color: var(--color-ink-black);">Theoretical Mean: $${mean.toFixed(2)} | Standard Deviation: $${Math.sqrt(variance).toFixed(2)}</div>
+          <div style="margin-top: 8px;"><strong>System Recommendation:</strong> <span class="rec-pill rec-increase">increase exposure...</span> (Full fractional Kelly unlocked)</div>
+        `;
+      }
+
+      out.innerHTML = statusHtml;
+    }
+
+    // Initialize Simulator
+    updateSimulator();
+
+    // Scroll progress bar & Nav highlight
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+
+      // Active nav state
+      const sections = document.querySelectorAll('.section-block');
+      const navLinks = document.querySelectorAll('.nav-link');
+      let currentSection = '';
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 150;
+        if (winScroll >= sectionTop) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + currentSection) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

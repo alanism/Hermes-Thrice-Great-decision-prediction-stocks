@@ -1,6 +1,6 @@
 # Page v0.2.0 Release Receipt
 
-Status: T32 release candidate reconciled; T33 certification pending
+Status: T33 release candidate certified; T34 publication pending
 Release branch: `main`
 Release version/tag: `0.2.0` / `v0.2.0`
 Receipt owner: root release planner
@@ -76,7 +76,27 @@ T32 result: `GREEN_VERIFIED` → `DONE`.
 
 ## T33 — Release-candidate certification
 
-Pending.
+- Candidate commit: `f9784b7eb768284df031371e19517baa3c48f307`
+- Model: `sol`
+- Primary hero: Simon Willison
+- Independent verifiers: Mitchell Hashimoto and Ryan Lopopolo
+- Start/end repository state: clean
+- Lock/project hashes: unchanged from T30
+- Targeted release tests: 43 passed
+- Full suite: 338 passed; collection: 338
+- Adversarial/no-egress/private-data/distribution tests: passed
+- Staged profile: 207 files, version `0.2.0`
+- Required staged paths missing: 0
+- Forbidden staged paths/files: 0
+- Private-data scan: success, zero issues
+- Install-source validation: allowed, zero issues
+- Staging manifest SHA-256: `77798AED40607A89F05B35799F0935CB354FF1CB1C52893485E3A77C2D660D03`
+- CLI/Committee smokes: both committed synthetic thesis fixtures returned `watch`; user authorization remained required
+- Temporary certification profile: removed after manifest verification
+
+The first CLI smoke used repository `local/` as the containment root for a committed fixture outside that directory and correctly failed `PATH_ESCAPE_FORBIDDEN`. The corrected smoke used the fixture directory as the explicit containment root and passed both cases. This was a verifier invocation error, not a product failure.
+
+T33 result: `GREEN_VERIFIED` → `DONE`; independent decision: `GO` for publication.
 
 ## T34 — Publication and fresh-tag smoke
 

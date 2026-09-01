@@ -149,6 +149,8 @@ Following Codex's read-only audit, the Engineering Council addressed all 6 ident
 | **T30** | Release Lineage Freeze | Ryan Lopopolo / Boris Cherny + Simon Willison | DONE | Current hashes and `WV-PAGE-001` recorded honestly |
 | **T31** | Independent Release-Suite Verification | Ryan Lopopolo / Nicholas Carlini | DONE | 43 targeted + 338 full tests; five adversarial probes stopped before calculation |
 | **T32** | Version & Documentation Reconciliation | Raphael Schaad / Ryan Lopopolo | DONE | Version `0.2.0`; all authoritative counts reconciled to 338 |
+| **T33** | Release-Candidate Certification | Simon Willison / Mitchell Hashimoto + Ryan Lopopolo | DONE | 338 tests; 207-file staged profile; privacy/install/CLI gates passed |
+| **T34** | Publish & Fresh-Tag Smoke | Mitchell Hashimoto / Ryan Lopopolo + Bret Taylor | PENDING | Awaiting immutable `v0.2.0` publication |
 
 ---
 

@@ -3,7 +3,7 @@
 Authoritative plan: [`docs/build-plan.md`](build-plan.md)  
 State owner: the executing root planner  
 Executing agent: root release planner
-Build status: RELEASE CANDIDATE — T30-T32 DONE; T33 READY; publication blocked until T33-T34 pass
+Build status: RELEASE CANDIDATE CERTIFIED — T30-T33 DONE; T34 READY
 Last updated: 2026-09-02
 
 This is the execution queue. T00-T29 describe the completed implementation. T30-T34 are the authoritative ship-now release sprint and execute serially.
@@ -101,8 +101,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 | T30 | DONE | Freeze release lineage and issue bounded provenance waiver | T29 | I5 / `sol` | Ryan Lopopolo | Boris Cherny + Simon Willison |
 | T31 | DONE | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
 | T32 | DONE | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
-| T33 | READY | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
-| T34 | PENDING | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
+| T33 | DONE | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
+| T34 | READY | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
 
 ## Detailed tasks
 
@@ -537,7 +537,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ### T33 — Build and independently certify the release candidate
 
-- **State:** `READY`
+- **State:** `DONE`
 - **Depends:** T32.
 - **Difficulty / intelligence:** I5 — final security, privacy, packaging, and financial-path release judgment.
 - **Model:** `sol` with high reasoning. Do not expose private local data to an external model.
@@ -550,11 +550,12 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Build the deny-by-default profile into a fresh temporary directory and validate it as an install source.
   - Verify the manifest includes `dlc-page.md`, Many-Model skill/references, schemas, valid fixtures, and plugin modules; verify it excludes `docs`, `tests`, `local`, `.git`, credentials, caches, and bytecode.
   - Run CLI Page and Committee smoke cases against committed synthetic fixtures and verify authorization remains required.
-- **Gate:** every check passes from one commit; count is at least T31's count; manifest and commit hashes are recorded; zero unexplained diff; reviewers sign `GO`.
+- **Receipt:** candidate `f9784b7eb768284df031371e19517baa3c48f307`; 43 targeted and 338 full tests passed; 207-file profile passed privacy/install/manifest/CLI gates; manifest SHA-256 `77798AED40607A89F05B35799F0935CB354FF1CB1C52893485E3A77C2D660D03`.
+- **Gate:** every check passes from one commit; count is at least T31's count; manifest and commit hashes are recorded; zero unexplained diff; reviewers sign `GO`. Passed.
 
 ### T34 — Commit, tag, publish, and smoke-test v0.2.0
 
-- **State:** `PENDING`
+- **State:** `READY`
 - **Depends:** T33.
 - **Difficulty / intelligence:** I5 — externally visible, difficult-to-reverse release operation with rollback judgment.
 - **Model:** `sol`; publication is not delegated to a lower-intelligence model.

@@ -1,5 +1,5 @@
 name: hermes-thrice-great-nhi
-version: 0.1.0
+version: 0.2.0
 description: "Capital Decision Lab guided portfolio research and recommendation profile"
 hermes_requires: "==0.16.0"
 license: "All rights reserved; publication terms pending"

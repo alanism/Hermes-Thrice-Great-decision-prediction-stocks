@@ -2,9 +2,9 @@
 
 **Hermes Thrice Great NHI — Capital Decision Lab**  
 **Build Phase:** Scott Page Multi-Model Thinking & Ensemble Integration (Tasks `T00`–`T29`)  
-**Audit & Remediation Phase:** Engineering Council Integration & Release Verification  
-**Date:** September 1, 2026  
-**Status:** 100% COMPLETE, INTEGRATED & RELEASE VERIFIED  
+**Release Sprint:** Evidence repair, independent certification, and publication (Tasks `T30`–`T34`)
+**Date:** September 2, 2026
+**Status:** RELEASE CANDIDATE VERIFIED — PUBLICATION PENDING T33–T34
 
 ---
 
@@ -15,7 +15,7 @@ This retrospective document details the complete architectural design, engineeri
 The goal of this build was to integrate rigorous multi-model diversity and ensemble decision-making principles grounded in Scott E. Page's research (*The Model Thinker*, *The Difference*), providing deterministic mathematical diagnostics, claim aggregation, and heavy-tail moment-safety vetoes to prevent single-model overconfidence in high-stakes capital allocation.
 
 ### Key Milestones Achieved
-- **Test Suite Growth:** Expanded from **216** baseline tests to **338** release tests (**+122 passing tests**, 0 failures, 0 lockfile drift).
+- **Test Suite Growth:** Expanded from **216** baseline tests to **338** release-candidate tests (**+122 passing tests**, 0 failures, 0 lockfile drift).
 - **Execution & Audit Remediation:** Completed all 30 governance-approved tasks (`T00` through `T29`) under strict Test-Driven Development (TDD) with frozen SHA-256 test hashes, followed by full remediation of the adversarial audit findings.
 - **Genuine Outcome Gate (T12):** Verified non-zero decision deltas across two committed synthetic thesis fixtures (`fixtures/valid/many_model/thesis_run_1_heavy_tail.json` and `fixtures/valid/many_model/thesis_run_2_markov_regime.json`) without hardcoded variable mutations.
 - **Full Multi-Model Runner Integration (T21/T22):** Wired all four mathematical diagnostics (`power_law`, `markov`, `bass`, `bandits`), schema/type input validation, per-model trust boundary enforcement, and claim aggregation compiler into `_run_page_method_pack()`.
@@ -137,15 +137,18 @@ Following Codex's read-only audit, the Engineering Council addressed all 6 ident
 | **T18** | Bandit Simulation Implementation | John Carmack / Andrej Karpathy | DONE | 288 tests passing |
 | **T19** | Claim Compiler IR RED Tests | Ryan Lopopolo / Nicholas Carlini + Jeff Dean | DONE | `B6C3C0...`, `5E0D82...`, `B3EF8A...`, `E01575...` |
 | **T20** | Deterministic Claim Compiler Implementation | John Carmack / Ryan Lopopolo | DONE | 299 tests passing |
-| **T21** | Page Runner E2E RED Tests | Mitchell Hashimoto / Ryan Lopopolo | DONE | Frozen Hash: `F89DA7...` |
+| **T21** | Page Runner E2E RED Tests | Mitchell Hashimoto / Ryan Lopopolo | DONE | Historical hash `F89DA7...`; superseded release baseline recorded by T30 |
 | **T22** | Page Multi-Model Runner & Trust Implementation | Mitchell Hashimoto / Ryan Lopopolo | DONE | All 4 models executed, per-model trust validated, & compiled |
 | **T23** | Committee Boundary RED Tests | Nicholas Carlini / Ryan Lopopolo | DONE | `6F8F52...`, `5391F0...` |
 | **T24** | Harden Committee Integration | Mitchell Hashimoto / Nicholas Carlini | DONE | Canonical 6-string closed recommendation vocabulary enforced |
 | **T25** | Thin Skill, Lazy References, DLC Voice | Jeffrey Quesnelle / Bret Taylor + Raphael Schaad | DONE | `SKILL.md`, 5 references, `dlc-page.md` |
 | **T26** | Register dlc-page.md in Distribution & Staging | Mitchell Hashimoto / Boris Cherny | DONE | `distribution.yaml` & `_ALLOWED_FILES` updated |
 | **T27** | Permanent Mutation Test Suites | Simon Willison / Nicholas Carlini | DONE | AST source mutation engine killing 100% of mutants in `test_model_thinking_mutations.py` |
-| **T28** | Complete Release Verification | Ryan Lopopolo / Mitchell Hashimoto + Simon Willison | DONE | 329 passed in 9.99s |
+| **T28** | Historical Pre-Hardening Verification | Ryan Lopopolo / Mitchell Hashimoto + Simon Willison | DONE | Historical 329-test run; not the v0.2.0 release count |
 | **T29** | Scaffolding Unship & Retrospective Finalization | Mitchell Hashimoto / Ryan Lopopolo | DONE | Retrospective signed off & git diff clean |
+| **T30** | Release Lineage Freeze | Ryan Lopopolo / Boris Cherny + Simon Willison | DONE | Current hashes and `WV-PAGE-001` recorded honestly |
+| **T31** | Independent Release-Suite Verification | Ryan Lopopolo / Nicholas Carlini | DONE | 43 targeted + 338 full tests; five adversarial probes stopped before calculation |
+| **T32** | Version & Documentation Reconciliation | Raphael Schaad / Ryan Lopopolo | DONE | Version `0.2.0`; all authoritative counts reconciled to 338 |
 
 ---
 
@@ -169,13 +172,12 @@ Following Codex's read-only audit, the Engineering Council addressed all 6 ident
 
 ---
 
-## 6. Verification & Final Sign-Off
+## 6. Release-Candidate Verification
 
 - **Baseline Test Count:** 216 passed (T01)
-- **Final Release Test Count:** **338 passed**, 0 failed, 0 warnings (T28)
+- **Current Release-Candidate Test Count:** **338 passed**, 0 failed, 0 warnings (T31)
 - **Net Added Verified Tests:** +122 tests
 - **Lockfile Integrity:** `pyproject.toml`, `requirements-dev.lock`, `requirements-runtime.lock` byte-identical to baseline.
 - **Distribution Integrity:** `scripts/build_profile_staging.py` verified; `dlc-page.md` staged and selected.
 - **Zero External Dependencies / Zero Egress:** Confirmed standard-library-only execution.
-- **Final Verdict:** RELEASE READY, 100% VERIFIED.
-
+- **Current Verdict:** RELEASE CANDIDATE VERIFIED. Publication remains blocked until T33 certification and T34 remote tag/fresh-clone smoke pass.

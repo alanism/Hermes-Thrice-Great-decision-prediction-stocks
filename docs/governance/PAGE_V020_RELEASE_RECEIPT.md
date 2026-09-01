@@ -1,6 +1,6 @@
 # Page v0.2.0 Release Receipt
 
-Status: T31 independently verified; T32 reconciliation pending
+Status: T32 release candidate reconciled; T33 certification pending
 Release branch: `main`
 Release version/tag: `0.2.0` / `v0.2.0`
 Receipt owner: root release planner
@@ -61,7 +61,18 @@ T31 result: `GREEN_VERIFIED` → `DONE`.
 
 ## T32 — Version and documentation reconciliation
 
-Pending.
+- Model: `luna` (explicit user override)
+- Primary hero: Raphael Schaad
+- Independent verifier: Ryan Lopopolo
+- Distribution version changed from `0.1.0` to `0.2.0`
+- Authoritative release-candidate count: 338 tests
+- Historical 329 count retained only where labeled pre-hardening/historical
+- Historical T21 hash retained only where labeled historical; current release baseline remains `315C6C27912D20BCD77206D103F14CEF40F191D4815B45E744DC438AE98BDB7B`
+- Status normalized to `RELEASE CANDIDATE`; no document claims v0.2.0 was published
+
+Verification: `git diff --check` clean after formatting normalization; all stale 329 references explicitly historical; no obsolete release claim remains; full 338-test suite passed; collected count 338.
+
+T32 result: `GREEN_VERIFIED` → `DONE`.
 
 ## T33 — Release-candidate certification
 

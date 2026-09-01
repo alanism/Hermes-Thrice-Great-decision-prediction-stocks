@@ -3,7 +3,7 @@
 Authoritative plan: [`docs/build-plan.md`](build-plan.md)  
 State owner: the executing root planner  
 Executing agent: root release planner
-Build status: RELEASE SPRINT IN PROGRESS — T30-T31 DONE; T32 READY; publication blocked until T32-T34 pass
+Build status: RELEASE CANDIDATE — T30-T32 DONE; T33 READY; publication blocked until T33-T34 pass
 Last updated: 2026-09-02
 
 This is the execution queue. T00-T29 describe the completed implementation. T30-T34 are the authoritative ship-now release sprint and execute serially.
@@ -64,7 +64,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ## Queue summary
 
-> **Release Governor Notice (2026-09-02):** T00-T29 are implementation-complete. Publication is not yet verified because the historical T21 hash no longer matches the expanded verifier and release prose mixes 329/338 counts. T30-T34 repair that evidence and publish `v0.2.0`.
+> **Release Governor Notice (2026-09-02):** T00-T29 are implementation-complete. T30-T32 repaired test lineage, froze the 338-test release suite, and reconciled version `0.2.0`. T33 certification and T34 publication remain.
 
 | ID | State | Task | Depends | Intelligence / model | Primary hero | Independent verifier |
 |---|---|---|---|---|---|---|
@@ -100,8 +100,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 | T29 | DONE | Unship scaffolding and rewrite retrospective | T28 | I1 / `luna` | Mitchell Hashimoto | Ryan Lopopolo |
 | T30 | DONE | Freeze release lineage and issue bounded provenance waiver | T29 | I5 / `sol` | Ryan Lopopolo | Boris Cherny + Simon Willison |
 | T31 | DONE | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
-| T32 | READY | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
-| T33 | PENDING | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
+| T32 | DONE | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
+| T33 | READY | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
 | T34 | PENDING | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
 
 ## Detailed tasks
@@ -520,7 +520,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ### T32 — Reconcile release documents and bump version to 0.2.0
 
-- **State:** `READY`
+- **State:** `DONE`
 - **Depends:** T31.
 - **Difficulty / intelligence:** I3 — broad cross-document reconciliation with low code risk.
 - **Model:** `luna`, by explicit user routing override; repository and synthetic evidence only.
@@ -532,11 +532,12 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Replace stale authoritative 328/329 release claims with T31's observed count; retain historical counts only when explicitly labeled historical.
   - Make every task state, hash, synthetic-fixture description, waiver, release version, and status agree across authoritative documents.
   - Set status to `RELEASE CANDIDATE`; do not claim publication before T34.
-- **Gate:** repository search finds no unlabeled stale release count or obsolete current-hash claim; links resolve; YAML parses; diff is limited to the authorized files; full suite remains green.
+- **Receipt:** `distribution.yaml` set to `0.2.0`; authoritative count reconciled to 338; T21/T28 history labeled; retrospective set to release candidate; full suite passed.
+- **Gate:** repository search finds no unlabeled stale release count or obsolete current-hash claim; links resolve; YAML parses; diff is limited to the authorized files; full suite remains green. Passed.
 
 ### T33 — Build and independently certify the release candidate
 
-- **State:** `PENDING`
+- **State:** `READY`
 - **Depends:** T32.
 - **Difficulty / intelligence:** I5 — final security, privacy, packaging, and financial-path release judgment.
 - **Model:** `sol` with high reasoning. Do not expose private local data to an external model.

@@ -231,7 +231,7 @@
      - *Fix:* Built `apply_source_mutation` in `tests/mutation/test_model_thinking_mutations.py` which dynamically rewrites AST source nodes of `power_law.py`, `markov.py`, `bass.py`, `bandits.py`, `compiler.py`, and `runner.py`, compiles isolated mutated modules into `sys.modules`, executes tests against mutated modules, and asserts 100% mutant kill rate across all 10 mutation targets.
   5. **Task List Synchronization & Clean Tree:**
      - *Issue:* Task list state headings were out of sync with summary table.
-     - *Fix:* Reconciled all detailed task headings (`### T12`–`### T29`) to `- **State:** DONE` with explicit receipts. Verified `git diff --check` with 0 whitespace errors and 329 passing tests.
+     - *Historical fix:* Reconciled all detailed task headings (`### T12`–`### T29`) to `- **State:** DONE` with explicit receipts. That pre-hardening checkpoint passed 329 tests; T31 later superseded it with the authoritative 338-test release-candidate run.
 * **Agent Rule:** Always build genuine AST-rewriting source-level mutation tests to verify that every mathematical formula, boundary check, and trust gate cannot be mutated without failing test execution.
 
 ---
@@ -255,6 +255,10 @@
 
 ---
 
-*Build Phase T00–T29 Complete, Integrated, Hardened & Release-Ready. Full test suite: 338 passed, 0 failed.*
-
+### Entry 18: v0.2.0 Release Evidence Repair
+* **Date:** 2026-09-02
+* **Tasks:** T30–T32
+* **Learning:** A green suite is not sufficient when its immutable verifier receipt is stale. Preserve the historical hash, record the current hash as a new release baseline, and use an explicit bounded waiver when prior RED ordering cannot be recreated honestly.
+* **Verifier Orchestration Rule:** Staging tests and repository-wide scanners must execute serially. Running them concurrently can make the scanner correctly observe the staging test's temporary output and create a false release failure.
+* **Current State:** Implementation complete; v0.2.0 release candidate has 338 passing tests. Publication remains pending T33–T34.
 

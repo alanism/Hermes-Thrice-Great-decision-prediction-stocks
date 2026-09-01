@@ -1,6 +1,6 @@
 # Many-Model Thinking Extension — Authoritative Build Plan
 
-Status: decision-complete planning baseline, 2026-09-01  
+Status: implementation complete; ship-now release sprint T30-T34 approved, 2026-09-02
 Execution queue: [`docs/tasks_list.md`](tasks_list.md)  
 Canonical adversarial register: [`docs/council/risk_review.md`](council/risk_review.md)
 
@@ -311,6 +311,10 @@ The extension is complete only when:
 - distribution registration, context budget, performance budget, and staged-private-data checks pass;
 - Page interpretation is clearly separated from existing Hermes Kelly/margin logic and from simulated voice output;
 - no unfinished placeholder marker, fictional interface, stale open question, or cut-model scaffolding remains in shipped guidance.
+- the current release-verifier hashes are recorded without rewriting the historical T21 receipt; any missing prior-RED evidence has a named, expiring waiver;
+- the authoritative release count is consistent in the task list, retrospective, learning log, and release receipt;
+- `distribution.yaml::version`, the immutable Git tag, and the published release identifier all equal `0.2.0` / `v0.2.0`;
+- a fresh checkout of `v0.2.0` passes the release smoke and staging-install validation.
 
 ## 12. Risk-retirement map
 
@@ -334,3 +338,37 @@ No risk is closed by documentation alone when the register calls for a mechanica
 ## 13. Explicitly deferred work
 
 SIR, Schelling, Blotto, Polya, NK, UCB1, Thompson sampling, Gittins computation, generalized discrete power-law fitting, cross-version byte identity, broker integration, automated trading, and distributed execution are not v1. A future proposal must name a validated thesis question, add a customer-outcome test, and repeat the contract-first Red/Green process. No placeholder modules or unused schema fields are created now.
+
+## 14. Ship-now release sprint
+
+The implementation is complete and the current full suite is green, but publication is blocked by stale release evidence: T21 records an obsolete frozen hash and T28-era prose mixes 329 and 338 tests. Tasks T30-T34 are the only authorized pre-release work. No feature expansion, calculation refactor, schema redesign, or adjacent cleanup is permitted.
+
+### 14.1 Release decision
+
+- **Release version:** bump `distribution.yaml` from `0.1.0` to `0.2.0` because Page is a backward-compatible feature expansion.
+- **Git tag:** `v0.2.0`. The existing `v0.1.0-cli-mvp` tag is retained. Never move, replace, or force-update either tag.
+- **Release branch:** `main`; publication uses ordinary fast-forward pushes to `origin` only.
+- **Release artifact:** the deny-by-default staged Hermes profile plus its generated manifest, built from the exact tagged commit.
+- **Failure policy:** any failed binary gate returns the active task to `BLOCKED`; do not weaken tests, rewrite a tag, force-push, or publish an unverified artifact. After a published defect, patch forward with a new version.
+
+### 14.2 Frozen-test lineage decision
+
+The historical T21 hash `F89DA724...` does not describe the current expanded verifier file. It remains historical evidence for the original T21 slice and must not be relabeled as unchanged. T30 records the current `tests/methods/test_page_runner_e2e.py` hash `315C6C27912D20BCD77206D103F14CEF40F191D4815B45E744DC438AE98BDB7B` as a new release-remediation verifier baseline.
+
+Because the malformed-input implementation already existed before those extra assertions were isolated as a new verifier slice, prior RED evidence cannot be recreated honestly. T30 therefore records waiver `WV-PAGE-001`, limited to test-order provenance—not behavior, security, or test failures. The waiver expires at the earlier of 2026-10-02 or the next behavior change under `capital_decision_lab/methods/runner.py`. Its compensating controls are source-level trust-boundary mutation, independent code review, the immutable current hash, the 338-test suite, and a fresh-tag smoke test.
+
+### 14.3 Release gates
+
+T30-T34 execute serially. The release is shipped only when all gates are true:
+
+1. Current verifier, outcome, mutation, project, and lock hashes are captured in one release receipt.
+2. The targeted Page, Committee, outcome, mutation, distribution, private-data, and full suites pass from a clean tree.
+3. Exactly 338 or more tests are collected; all authoritative documents report the observed count, never a copied expectation.
+4. The staging manifest contains `dlc-page.md`, the Many-Model skill, schemas, fixtures, and plugin modules, and excludes `docs`, `tests`, `local`, credentials, and generated caches.
+5. `git diff --check` is clean; lock hashes remain unchanged; no runtime dependency is added.
+6. The release commit is tagged once as `v0.2.0`, pushed without force, and verified by remote ref lookup.
+7. A fresh checkout of `v0.2.0` passes the release smoke and install-source validation.
+
+Task ownership, intelligence levels, model routing, exact receipts, and editable scopes are defined in `docs/tasks_list.md`.
+
+Release-governor routing override: by explicit user direction on 2026-09-02, every T30-T34 task previously assigned to Gemini or DeepSeek executes on `luna`. This changes T31 and T32's deployment model only; their difficulty classification, hero ownership, independent verification, containment rules, and binary gates remain unchanged. I5 tasks remain on `sol`.

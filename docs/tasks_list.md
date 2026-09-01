@@ -2,11 +2,11 @@
 
 Authoritative plan: [`docs/build-plan.md`](build-plan.md)  
 State owner: the executing root planner  
-Executing agent: Gemini 3.7 Flash  
-Build status: 100% COMPLETE & RELEASE VERIFIED (All 30 tasks T00–T29 complete, 338 tests passing, permanent AST source mutations green, staging verified)  
-Last updated: 2026-09-01  
+Executing agent: root release planner
+Build status: RELEASE SPRINT READY — implementation T00-T29 complete; T30 READY; publication blocked until T30-T34 pass
+Last updated: 2026-09-02
 
-This is the execution queue. Every task has been executed, verified with frozen SHA-256 test hashes, and marked DONE with complete receipts.
+This is the execution queue. T00-T29 describe the completed implementation. T30-T34 are the authoritative ship-now release sprint and execute serially.
 
 ## Intelligence and model routing
 
@@ -64,7 +64,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ## Queue summary
 
-> **Engineering Council Notice (2026-09-01):** Following Codex adversarial review and remediation execution, all tasks `T00` through `T29` are **100% COMPLETE, INTEGRATED, and RELEASE VERIFIED**.
+> **Release Governor Notice (2026-09-02):** T00-T29 are implementation-complete. Publication is not yet verified because the historical T21 hash no longer matches the expanded verifier and release prose mixes 329/338 counts. T30-T34 repair that evidence and publish `v0.2.0`.
 
 | ID | State | Task | Depends | Intelligence / model | Primary hero | Independent verifier |
 |---|---|---|---|---|---|---|
@@ -98,6 +98,11 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 | T27 | DONE | Author permanent mutation test suites | T20,T24,T26 | I5 / `sol` | Simon Willison | Nicholas Carlini |
 | T28 | DONE | Run complete release verification & mutation audit | T27 | I5 / `sol` | Ryan Lopopolo | Mitchell Hashimoto + Simon Willison |
 | T29 | DONE | Unship scaffolding and rewrite retrospective | T28 | I1 / `luna` | Mitchell Hashimoto | Ryan Lopopolo |
+| T30 | READY | Freeze release lineage and issue bounded provenance waiver | T29 | I5 / `sol` | Ryan Lopopolo | Boris Cherny + Simon Willison |
+| T31 | PENDING | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
+| T32 | PENDING | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
+| T33 | PENDING | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
+| T34 | PENDING | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
 
 ## Detailed tasks
 
@@ -388,7 +393,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 - **Primary hero:** Mitchell Hashimoto. Verifier hero: Ryan Lopopolo.
 - **Receipt:**
   - Authored `tests/methods/test_page_runner_e2e.py` covering multi-model execution, trust boundary rejection, claim compiler integration, and closed 6-string recommendation vocabulary.
-  - Frozen Test Hash: `F89DA72433AA1F88181CF900F9A9044A8C299FE28CA2B4A46AD8FC31FEFFBBC7`.
+  - Historical frozen hash for the original T21 slice: `F89DA72433AA1F88181CF900F9A9044A8C299FE28CA2B4A46AD8FC31FEFFBBC7`.
+  - This hash does not describe the later expanded release-boundary verifier. T30 owns the superseding hash and waiver; no task may claim the historical hash remained unchanged.
 
 ### T22 — Implement executable Page method pack and trust gate
 
@@ -462,7 +468,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 - **Intelligence/model:** I5 — `sol`.
 - **Primary hero:** Ryan Lopopolo. Review heroes: Mitchell Hashimoto, Simon Willison.
 - **Receipt:**
-  - Ran complete test suite across all subsystems: 329 tests passed, 0 failed, 0 warnings.
+  - Historical pre-hardening run: 329 tests passed, 0 failed, 0 warnings.
+  - This count is not the v0.2.0 release count. T31 and T33 must record the observed current count, expected to be at least 338.
   - Staging profile builder verified with zero issues.
   - Lockfile hashes confirmed byte-identical to baseline.
 
@@ -476,6 +483,89 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Verified clean `git diff --check` with zero whitespace errors.
   - Updated `docs/learning_logs.md` (Entries 14 & 15).
   - Rewrote `docs/retrospective_build_page.md` with complete, verified receipts.
+
+### T30 — Freeze release lineage and issue bounded provenance waiver
+
+- **State:** `READY`
+- **Depends:** T29.
+- **Difficulty / intelligence:** I5 — frontier governance judgment; an inaccurate lineage decision would invalidate the release even if code is green.
+- **Model:** `sol` with high reasoning. Do not downgrade.
+- **Primary hero subagent:** Ryan Lopopolo — owns binary gating, eval-tamper detection, and honest RED/GREEN evidence.
+- **Independent reviewers:** Boris Cherny for executable agent workflow; Simon Willison for empirical build-ledger integrity.
+- **Editable scope:** `docs/build-plan.md`, `docs/tasks_list.md`, and new `docs/governance/PAGE_V020_RELEASE_RECEIPT.md` only. No production, test, fixture, schema, lock, or distribution edit.
+- **Required work:**
+  - Record starting branch, exact commit, clean/dirty state, Python/pytest versions, remote, existing tags, and all release-relevant hashes.
+  - Record T21's `F89DA724...` as historical and the current Page verifier hash `315C6C27912D20BCD77206D103F14CEF40F191D4815B45E744DC438AE98BDB7B` as the release-remediation baseline.
+  - Record outcome hash `B87C26E437DA16DE8818A331C005765D1C1E3C9631D0D30A8F2DA203F0A441A7`, mutation hash `EC6339C22C98A7973C9FA90233B17AB8CA8A593335B8FDE928AA492D14DB4F46`, and the three lock/project hashes from the plan.
+  - Add waiver `WV-PAGE-001` exactly as bounded in build-plan §14.2; no security or failing-test waiver is permitted.
+- **Gate:** one self-consistent receipt exists; no historical hash is represented as current; waiver has owner, reason, compensating controls, scope, and expiry; `git diff --check` passes; write set is docs-only.
+
+### T31 — Freeze and independently verify the v0.2.0 release suite
+
+- **State:** `PENDING`
+- **Depends:** T30.
+- **Difficulty / intelligence:** I4 — independent adversarial oracle work with bounded repository scope.
+- **Model:** `luna`, by explicit user routing override. Difficulty remains I4; `sol` is the fallback if Luna cannot satisfy the verifier gate.
+- **Primary hero subagent:** Ryan Lopopolo — defines the immutable binary release gate.
+- **Independent verifier:** Nicholas Carlini — attacks malformed/trust-boundary cases and verifies no input reaches calculation after rejection.
+- **Editable scope:** the T30 release receipt only. Existing tests are read-only; any required new regression test goes in a new release-specific test file and receives its own hash. Never edit a previously frozen test.
+- **Required checks:**
+  - Recompute every recorded hash and fail on mismatch.
+  - Run Page runner, Committee, two-thesis outcome, AST mutation, adversarial security, distribution, and staging tests separately before the full suite.
+  - Probe non-object envelopes, malformed versioned contracts, missing trust classes, nested `untrusted_external`, nonfinite numbers, and hostile extra fields. Rejection must be deterministic and must not invoke a calculation function.
+  - Collect and run the full suite; record the observed count and elapsed time rather than copying 338 from this plan.
+- **Gate:** targeted and full suites pass; collected count is at least 338; current hashes remain fixed; no product file changes; independent verifier signs the receipt.
+
+### T32 — Reconcile release documents and bump version to 0.2.0
+
+- **State:** `PENDING`
+- **Depends:** T31.
+- **Difficulty / intelligence:** I3 — broad cross-document reconciliation with low code risk.
+- **Model:** `luna`, by explicit user routing override; repository and synthetic evidence only.
+- **Primary hero subagent:** Raphael Schaad — owns coherent software voice and campsite-rule documentation cleanup.
+- **Independent verifier:** Ryan Lopopolo — mechanically rejects count, hash, version, state, or link drift.
+- **Editable scope:** `distribution.yaml`, `docs/tasks_list.md`, `docs/retrospective_build_page.md`, `docs/learning_logs.md`, and `docs/governance/PAGE_V020_RELEASE_RECEIPT.md`.
+- **Required work:**
+  - Set `distribution.yaml::version` to `0.2.0`.
+  - Replace stale authoritative 328/329 release claims with T31's observed count; retain historical counts only when explicitly labeled historical.
+  - Make every task state, hash, synthetic-fixture description, waiver, release version, and status agree across authoritative documents.
+  - Set status to `RELEASE CANDIDATE`; do not claim publication before T34.
+- **Gate:** repository search finds no unlabeled stale release count or obsolete current-hash claim; links resolve; YAML parses; diff is limited to the authorized files; full suite remains green.
+
+### T33 — Build and independently certify the release candidate
+
+- **State:** `PENDING`
+- **Depends:** T32.
+- **Difficulty / intelligence:** I5 — final security, privacy, packaging, and financial-path release judgment.
+- **Model:** `sol` with high reasoning. Do not expose private local data to an external model.
+- **Primary hero subagent:** Simon Willison — owns containment, staged-private-data proof, and evidence-over-vibes release review.
+- **Independent verifiers:** Mitchell Hashimoto for operability/staging; Ryan Lopopolo for binary gate integrity.
+- **Editable scope:** release receipt only unless a gate fails. A failed product gate opens a new scoped fix task; T33 never patches code or tests directly.
+- **Required checks:**
+  - Assert clean start, exact lock hashes, stdlib/no-egress calculation layer, closed recommendation vocabulary, and no private/generated artifacts.
+  - Run targeted release suites and the full suite from the candidate tree.
+  - Build the deny-by-default profile into a fresh temporary directory and validate it as an install source.
+  - Verify the manifest includes `dlc-page.md`, Many-Model skill/references, schemas, valid fixtures, and plugin modules; verify it excludes `docs`, `tests`, `local`, `.git`, credentials, caches, and bytecode.
+  - Run CLI Page and Committee smoke cases against committed synthetic fixtures and verify authorization remains required.
+- **Gate:** every check passes from one commit; count is at least T31's count; manifest and commit hashes are recorded; zero unexplained diff; reviewers sign `GO`.
+
+### T34 — Commit, tag, publish, and smoke-test v0.2.0
+
+- **State:** `PENDING`
+- **Depends:** T33.
+- **Difficulty / intelligence:** I5 — externally visible, difficult-to-reverse release operation with rollback judgment.
+- **Model:** `sol`; publication is not delegated to a lower-intelligence model.
+- **Primary hero subagent:** Mitchell Hashimoto — owns one-command operability, controlled release state, and immutable packaging.
+- **Independent verifiers:** Ryan Lopopolo for ref/hash verification; Bret Taylor for the two customer-decision outcome smokes.
+- **Authorized release:** ordinary fast-forward push of `main` and new annotated tag `v0.2.0` to configured `origin`. Force push, tag movement, tag deletion, and history rewrite are forbidden.
+- **Required work:**
+  - Update the release receipt and retrospective with T33's evidence; set final status to `RELEASED` only in the release commit.
+  - Commit the authorized release files, rerun `git diff --check` and the full suite, and require a clean tree.
+  - Abort if `v0.2.0` already exists and does not point to the release commit; otherwise create one annotated tag.
+  - Push `main`, push `v0.2.0`, and verify both remote object IDs without force.
+  - Fresh-clone `v0.2.0` into a disposable temporary directory; validate the install source and rerun the Page/Committee/outcome release smoke.
+  - Record release commit, tag object, remote refs, manifest hash, commands, exit codes, and elapsed times.
+- **Gate:** remote `main` and `refs/tags/v0.2.0` resolve to the approved release; fresh-tag smoke passes; local tree is clean; no secrets or generated staging tree are committed. Failure after publication is patched forward—never hidden by rewriting the tag.
 
 ## Dependency graph
 
@@ -509,6 +599,8 @@ T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12
                                              T25 → T26
                                                     ↓
                                              T27 → T28 → T29
+                                                    ↓
+                                  T30 → T31 → T32 → T33 → T34
 ```
 
 ## Execution rule

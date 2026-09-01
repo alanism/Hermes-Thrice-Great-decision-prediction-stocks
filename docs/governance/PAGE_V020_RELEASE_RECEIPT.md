@@ -1,6 +1,6 @@
 # Page v0.2.0 Release Receipt
 
-Status: T30 lineage frozen; T31 verification pending
+Status: T31 independently verified; T32 reconciliation pending
 Release branch: `main`
 Release version/tag: `0.2.0` / `v0.2.0`
 Receipt owner: root release planner
@@ -45,7 +45,19 @@ T30 result: `GREEN_VERIFIED` → `DONE`.
 
 ## T31 — Independent verifier snapshot
 
-Pending.
+- Model: `luna` (explicit user override)
+- Primary hero: Ryan Lopopolo
+- Independent verifier: Nicholas Carlini
+- Frozen-hash replay: all six recorded verifier/project/lock hashes matched
+- Targeted release selection: 43 tests passed (Page runner, method pack, Committee, outcome, AST mutations, adversarial security, distribution, and staging)
+- Adversarial probes: five malformed/untrusted envelopes returned deterministic `pause`, emitted the expected schema/trust flag, invoked power-law calculation zero times, and raised no exception
+- Collection: 338 tests
+- Full suite: 338 passed in the final serial run
+- Product/test changes: none
+
+One invalid verification attempt ran the staging tests and full repository scanner concurrently. The scanner correctly observed the staging test's temporary `dist/policy-test-profile` while it was being written and failed `test_domain_anti_leakage`. After the targeted run completed, the temporary tree was absent. The full suite was rerun serially from the same commit and passed. This is recorded as verifier orchestration error, not product evidence, and staging/scanner release commands are serial from this point forward.
+
+T31 result: `GREEN_VERIFIED` → `DONE`.
 
 ## T32 — Version and documentation reconciliation
 

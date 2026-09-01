@@ -3,7 +3,7 @@
 Authoritative plan: [`docs/build-plan.md`](build-plan.md)  
 State owner: the executing root planner  
 Executing agent: root release planner
-Build status: RELEASE SPRINT READY — implementation T00-T29 complete; T30 READY; publication blocked until T30-T34 pass
+Build status: RELEASE SPRINT IN PROGRESS — T30 DONE; T31 READY; publication blocked until T31-T34 pass
 Last updated: 2026-09-02
 
 This is the execution queue. T00-T29 describe the completed implementation. T30-T34 are the authoritative ship-now release sprint and execute serially.
@@ -98,8 +98,8 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 | T27 | DONE | Author permanent mutation test suites | T20,T24,T26 | I5 / `sol` | Simon Willison | Nicholas Carlini |
 | T28 | DONE | Run complete release verification & mutation audit | T27 | I5 / `sol` | Ryan Lopopolo | Mitchell Hashimoto + Simon Willison |
 | T29 | DONE | Unship scaffolding and rewrite retrospective | T28 | I1 / `luna` | Mitchell Hashimoto | Ryan Lopopolo |
-| T30 | READY | Freeze release lineage and issue bounded provenance waiver | T29 | I5 / `sol` | Ryan Lopopolo | Boris Cherny + Simon Willison |
-| T31 | PENDING | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
+| T30 | DONE | Freeze release lineage and issue bounded provenance waiver | T29 | I5 / `sol` | Ryan Lopopolo | Boris Cherny + Simon Willison |
+| T31 | READY | Freeze and independently verify the v0.2.0 release suite | T30 | I4 / `luna` (user override) | Ryan Lopopolo | Nicholas Carlini |
 | T32 | PENDING | Reconcile release documents and bump version to 0.2.0 | T31 | I3 / `luna` (user override) | Raphael Schaad | Ryan Lopopolo |
 | T33 | PENDING | Build and independently certify the release candidate | T32 | I5 / `sol` | Simon Willison | Mitchell Hashimoto + Ryan Lopopolo |
 | T34 | PENDING | Commit, tag, publish, and smoke-test v0.2.0 | T33 | I5 / `sol` | Mitchell Hashimoto | Ryan Lopopolo + Bret Taylor |
@@ -486,7 +486,7 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
 
 ### T30 — Freeze release lineage and issue bounded provenance waiver
 
-- **State:** `READY`
+- **State:** `DONE`
 - **Depends:** T29.
 - **Difficulty / intelligence:** I5 — frontier governance judgment; an inaccurate lineage decision would invalidate the release even if code is green.
 - **Model:** `sol` with high reasoning. Do not downgrade.
@@ -498,11 +498,12 @@ PENDING -> READY -> IN_PROGRESS -> RED_RECORDED -> GREEN_VERIFIED -> DONE
   - Record T21's `F89DA724...` as historical and the current Page verifier hash `315C6C27912D20BCD77206D103F14CEF40F191D4815B45E744DC438AE98BDB7B` as the release-remediation baseline.
   - Record outcome hash `B87C26E437DA16DE8818A331C005765D1C1E3C9631D0D30A8F2DA203F0A441A7`, mutation hash `EC6339C22C98A7973C9FA90233B17AB8CA8A593335B8FDE928AA492D14DB4F46`, and the three lock/project hashes from the plan.
   - Add waiver `WV-PAGE-001` exactly as bounded in build-plan §14.2; no security or failing-test waiver is permitted.
-- **Gate:** one self-consistent receipt exists; no historical hash is represented as current; waiver has owner, reason, compensating controls, scope, and expiry; `git diff --check` passes; write set is docs-only.
+- **Receipt:** `docs/governance/PAGE_V020_RELEASE_RECEIPT.md`; starting commit `916b3419f7609e721fbba2aad28f16805813d00d`; current verifier hash and `WV-PAGE-001` recorded; docs-only write set verified.
+- **Gate:** one self-consistent receipt exists; no historical hash is represented as current; waiver has owner, reason, compensating controls, scope, and expiry; `git diff --check` passes; write set is docs-only. Passed.
 
 ### T31 — Freeze and independently verify the v0.2.0 release suite
 
-- **State:** `PENDING`
+- **State:** `READY`
 - **Depends:** T30.
 - **Difficulty / intelligence:** I4 — independent adversarial oracle work with bounded repository scope.
 - **Model:** `luna`, by explicit user routing override. Difficulty remains I4; `sol` is the fallback if Luna cannot satisfy the verifier gate.

@@ -4,6 +4,16 @@ Version 0.1 · Reviewed 2026-10-09 · Documentation only
 
 This guide describes how an assistant should introduce Decision > Prediction when a user first requests investment research and the repository is available. It makes the research lenses discoverable, asks for useful preferences, and keeps calculations, evidence and permissions separate. It does not install a plugin, run a scheduler, grant account access or place trades.
 
+## Educational reporting boundary
+
+Decision ≥ Prediction is educational research and decision support. It presents evidence, exposure, assumptions and scenarios so users make their own decisions and predictions. It does not provide portfolio advisory, prescribe trades or allocations, or issue Buy/Hold/Add/Trim/Sell instructions. Older engine/schema names containing “recommendation” describe model artifacts, not personal advice; the dot reporting flow must not present them as recommended actions.
+
+For optional portfolio context, recommend a redacted CSV or screenshot with names, account numbers and other identifiers removed before sharing. Keep only necessary holdings/exposure fields and the as-of date; verify extracted values. The project creator is not an intended recipient of inputs or outputs. The selected agent, model, storage or hosting provider may process or retain data under its own policies. Verify the actual workflow and destination; this documentation does not guarantee that all deployments are local-only or that a creator can never receive data. Do not upload private data to GitHub, public hosting or a new provider without required permission.
+
+## HTML-first report experience
+
+Use the [first-report flow](../reports/FIRST-REPORT-WITH-DOT.md) and [HTML authoring guide](../reports/HTML-REPORT-GUIDE.md) for the enhanced reading edition. Its ten-section presentation maps the older thirteen-section checklist explicitly; it does not waive missing work or claim legacy-order compliance. The [template](../../templates/stock-report/Stock-Report-Web-Template.html) is an inert scaffold, not a finished report.
+
 ## First use and discoverability
 
 When this file is made available to the assistant, read it together with the complete [Decision Prediction skill](../../skills/decision-prediction/SKILL.md), its [report anatomy](../../skills/decision-prediction/references/monocle-report-anatomy.md), and the [setup manual](../Decision-Prediction-onboard-setup.md). Inspect the actual files and current execution capabilities before describing anything as installed or working.
@@ -88,7 +98,7 @@ Use the customer-facing labels **Measured**, **Calculated**, **Modeled** and **F
 
 ## Preflight before delivering a full report
 
-Read the entire skill and its referenced anatomy, not just the numeric engine instructions. Use the [manual’s completeness gate](../Decision-Prediction-onboard-setup.md#full-report-completeness-gate) on every report. Keep the canonical 13-section order, explicitly mark required work that was not run or is unavailable, and explain the reason and consequence. Do not hide omitted work behind successful calculation tests.
+Read the entire skill and its referenced anatomy, not just the numeric engine instructions. Use the [manual’s completeness gate](../Decision-Prediction-onboard-setup.md#full-report-completeness-gate) on every report. For the legacy edition, keep its canonical 13-section order. For the enhanced HTML reading edition, use the explicit ten-section mapping in the HTML guide while retaining the complete analytical checklist. Mark required work that was not run or is unavailable, and explain the reason and consequence. Do not hide omitted work behind successful calculation tests.
 
 Measured provider usage and cost may be unavailable. Report that gap; use current verified provider pricing if an estimate is needed. Historical model prices and cache discounts in older instructions are not current pricing authority.
 
@@ -105,3 +115,4 @@ Do not silently make paid external model calls or send portfolio data to a new m
 This document is intended for a public repository. Use public or synthetic examples only. Keep financial accounts, balances, screenshot identifiers, credentials and private reports out of source control. Publishing this guide does not authorize publishing a user's inputs. See the [customer lessons](../dot-onboarding-lessons.md) for the failure modes this onboarding is designed to prevent.
 
 Reviewed source: `5bfe72972ee9b3ade55923e5419ca7ede1ac70ba`. Review paths and capabilities again when upgrading. This documentation does not prove runtime onboarding, report compliance, recurring execution or investment performance.
+

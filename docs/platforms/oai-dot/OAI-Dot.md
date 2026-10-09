@@ -1,8 +1,18 @@
 # Decision Prediction with dot
 
-Version 0.1 · Reviewed 2026-10-09 · Source-repository guide
+Version 0.2 · Reviewed 2026-10-09 · Source-repository guide
 
 Use this guide with the [shared onboarding requirements](../common.md) and [setup manual](../../Decision-Prediction-onboard-setup.md). It describes a proposed first-use experience for dot and the capability checks required to provide it truthfully. It does not install a native dot plugin or make the repository automatically discoverable.
+
+## Educational scope and optional context
+
+Decision ≥ Prediction is educational research and decision support. It presents evidence, exposure, assumptions and scenarios so users make their own decisions and predictions. It does not provide portfolio advisory, prescribe trades or allocations, or issue Buy/Hold/Add/Trim/Sell instructions. Older engine/schema names containing “recommendation” describe model artifacts, not personal advice; the dot reporting flow must not present them as recommended actions.
+
+For optional portfolio context, recommend a redacted CSV or screenshot with names, account numbers and other identifiers removed before sharing. Keep only necessary holdings/exposure fields and the as-of date; verify extracted values. The project creator is not an intended recipient of inputs or outputs. The selected agent, model, storage or hosting provider may process or retain data under its own policies. Verify the actual workflow and destination; this documentation does not guarantee that all deployments are local-only or that a creator can never receive data. Do not upload private data to GitHub, public hosting or a new provider without required permission.
+
+## First useful report
+
+Follow the [one-ticker first-report flow](../../reports/FIRST-REPORT-WITH-DOT.md), [HTML authoring guide](../../reports/HTML-REPORT-GUIDE.md) and [reusable template](../../../templates/stock-report/Stock-Report-Web-Template.html). Begin with a bounded public-data edition; portfolio personalization and schedules are later opt-ins. Lead with the decision takeaway and what could change it. Ask only unanswered preferences, resolve supported setup within existing permission, and verify that the private artifact opens. No zero-click installation or hosted delivery is promised.
 
 ## First use
 
@@ -46,7 +56,7 @@ These are documented host expectations. This file alone does not implement them 
 
 ## Optional recurring work
 
-After an on-demand example, ask whether the user wants an optional five-stock daily rotation, weekly chosen-ticker refresh such as META, or separate macro review. Agree the schedule, time zone, inputs, rotation, destination and retention. Use an actually available scheduling facility and verify setup before claiming it is enabled. A successful scheduled run must be verified separately.
+After an on-demand example, ask whether the user wants an optional five-stock daily rotation, weekly chosen-ticker refresh, or weekly macro review. Agree the schedule, time zone, inputs, rotation, destination and retention. Use an actually available scheduling facility and verify setup before claiming it is enabled. A successful scheduled run must be verified separately.
 
 Neither the adapter nor this guide installs native cron, creates a daemon, enables account access or places trades. Research permission is not trading permission. Preserve one report identity with dated versions where supported; report persistence or source failures honestly.
 
@@ -55,3 +65,4 @@ Neither the adapter nor this guide installs native cron, creates a daemon, enabl
 Before advertising automatic first-use onboarding in dot, test a new user from guide discovery through preference selection, synthetic calculation and a visibly scoped report. Verify both a successful path and unavailable-runtime/source/confirmation paths. A future native integration needs implementation and acceptance tests; this documentation is not such an integration.
 
 The Hermes staging configuration currently excludes these `docs` guides and the eight original root cards. A source checkout can expose them, but staged-profile discovery needs separate distribution work. Do not change the runtime allowlist merely to make this guide appear installed.
+

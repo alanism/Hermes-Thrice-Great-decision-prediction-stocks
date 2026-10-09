@@ -1,5 +1,11 @@
 # START HERE — Hermes Thrice Great · Decision > Prediction
 
+## Platform onboarding and verified scope
+
+For first-use setup with dot, Meta Muse AI, Grok Bot, Claude Cloud or Hermes, read the [platform onboarding guides](docs/platforms/README.md) and [customer setup manual](docs/Decision-Prediction-onboard-setup.md). These explain available investor-inspired lenses, separate analysis and risk preferences, evidence gates, verified versus conditional capabilities, and opt-in review schedules.
+
+The guides are source documentation, not a native integration or installer. The current staging allowlist excludes these guides and the eight original investor cards; automatic installed-profile discovery needs separate implementation and tests. See the [full-report completeness gate](docs/Decision-Prediction-onboard-setup.md#full-report-completeness-gate) before claiming the whole workflow was applied.
+
 The operational guide for the investment-reasoning system: a Hermes agent that applies Edward Thorp-style evidence discipline to a concentrated barbell portfolio (AI · defense · minerals & energy · fintech).
 
 The system **never connects to your brokerage**. Portfolio data comes from screenshots/CSVs you drop into a folder — that is the whole security model. Data stays on your machine; the analyst reads it the way a human would.

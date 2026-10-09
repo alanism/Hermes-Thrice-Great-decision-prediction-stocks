@@ -1,5 +1,11 @@
 # Hermes Thrice Great NHI — Investment
 
+## Platform onboarding and verified scope
+
+For first-use setup with dot, Meta Muse AI, Grok Bot, Claude Cloud or Hermes, read the [platform onboarding guides](docs/platforms/README.md) and [customer setup manual](docs/Decision-Prediction-onboard-setup.md). These explain available investor-inspired lenses, separate analysis and risk preferences, evidence gates, verified versus conditional capabilities, and opt-in review schedules.
+
+The guides are source documentation, not a native integration or installer. The current staging allowlist excludes these guides and the eight original investor cards; automatic installed-profile discovery needs separate implementation and tests. See the [full-report completeness gate](docs/Decision-Prediction-onboard-setup.md#full-report-completeness-gate) before claiming the whole workflow was applied.
+
 **A deterministic capital-decision engine that plugs into your Hermes agent — Kelly sizing, convexity, and margin-safety math, run by fixed Python, not a language model's guess.**
 
 This repo is not a standalone app. It's an **extension for the [Hermes](https://hermes-agent.nousresearch.com) desktop agent from Nous Research** (and, untested but supported in principle, the OpenClaw agent harness or any CLI-driven Hermes session). You talk to it in plain language through your agent; underneath, every number — Kelly fraction, margin call price, convexity score — is computed by a fixed standard-library Python engine, so the same inputs always produce the same output. No drift, no re-derivation, no "the model felt like 15% this time."

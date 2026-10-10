@@ -1,5 +1,10 @@
 # START HERE — Hermes Thrice Great · Decision > Prediction
 
+## Portable cloud install (review candidate)
+
+Use the [portable cloud guide](docs/cloud-portability/README.md) for a fresh standard-library Python bundle, explicit private storage, capability diagnostics and a relocated synthetic report workflow. This separate route includes all eight original cards, Page, source skills/anatomy and report policy. It does not install native host integrations or schedules. Read the [verification ledger](docs/cloud-portability/VERIFICATION.md) and [progress board](docs/cloud-portability/KANBAN.html) for open acceptance gates. The older Hermes-specific instructions below remain available as a separate host route.
+
+
 ## Educational use and privacy
 
 Decision ≥ Prediction is educational research and decision support. It presents evidence, exposure, assumptions and scenarios so users make their own decisions and predictions. It does not provide portfolio advisory, prescribe trades or allocations, or issue Buy/Hold/Add/Trim/Sell instructions. Older engine/schema names containing “recommendation” describe model artifacts, not personal advice; the dot reporting flow must not present them as recommended actions.

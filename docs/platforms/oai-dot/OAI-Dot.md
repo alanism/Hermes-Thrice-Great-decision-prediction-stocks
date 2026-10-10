@@ -66,3 +66,7 @@ Before advertising automatic first-use onboarding in dot, test a new user from g
 
 The Hermes staging configuration currently excludes these `docs` guides and the eight original root cards. A source checkout can expose them, but staged-profile discovery needs separate distribution work. Do not change the runtime allowlist merely to make this guide appear installed.
 
+
+## Portable implementation candidate
+
+A separate [portable cloud bundle](../../cloud-portability/README.md) now implements fresh installation, explicit data roots, integrity checks and a generic-shell adapter. It includes the authored cards and source anatomy without modifying the original Hermes staging allowlist. It still does not register a native dot integration. See the current [verification ledger](../../cloud-portability/VERIFICATION.md): historical fixed-path adapter limits above are historical evidence, not claims about this new implementation. Source research, generated-image creation/inspection, browser visual QA, scheduling and private delivery require real, authorized host capabilities.

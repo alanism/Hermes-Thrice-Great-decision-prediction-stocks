@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-10T05:29:22.713455+00:00",
+  "completion_rule": "Done / 10 fixed acceptance tasks; incomplete review and publication remain open",
+  "next_action": "Obtain separate permission for pytest 9.0.2 installation and run full upstream regression. Browser visual/interaction QA and native-host acceptance remain open; no merge or deployment.",
+  "tasks": [
+    {
+      "id": 1,
+      "task": "Verify isolated baseline and requirements",
+      "status": "Done",
+      "evidence": "Remote refs main 5bfe729 and docs c04f68e verified; isolated clone; report standard v5 read."
+    },
+    {
+      "id": 2,
+      "task": "Package complete portable assets",
+      "status": "Done",
+      "evidence": "Fresh bundle inventory verifies all eight original case-sensitive cards, Page, source SKILL/anatomy, schemas, engines, synthetic fixture, policy and onboarding; deny-by-default public paths and sentinel checks pass."
+    },
+    {
+      "id": 3,
+      "task": "Implement fresh bootstrap and integrity checks",
+      "status": "Done",
+      "evidence": "Fresh install and relocated doctor/validate/analyze/compare pass in isolated subprocesses with empty PYTHONPATH; tampered code rejected before import, extra files/reinstall/missing assets/symlinks rejected."
+    },
+    {
+      "id": 4,
+      "task": "Implement durable versioned private storage",
+      "status": "Done",
+      "evidence": "Seven stdlib storage tests pass: explicit destination, traversal/foreign/symlink rejection, immutable revisions, current pointer, busy writer, malformed payload."
+    },
+    {
+      "id": 5,
+      "task": "Define host capability and scheduling contracts",
+      "status": "Done",
+      "evidence": "Host capability contract and inactive schedule manifest documented; doctor distinguishes observed interpreter/file access from unimplemented native integrations."
+    },
+    {
+      "id": 6,
+      "task": "Implement eight-lens synthetic HTML renderer",
+      "status": "Done",
+      "evidence": "16 report tests pass, including Node frozen-scenario controls, eight lenses plus Page, 13-component mapping, BMC/Powers, exact audits, and image-validation gates. Actual host-generated inspected PNG imported separately; browser remains unverified."
+    },
+    {
+      "id": 7,
+      "task": "Verify relocated offline fresh-install acceptance",
+      "status": "Done",
+      "evidence": "37 stdlib tests pass. Fresh relocated bundle runs all portable actions; actual host-generated 1024x1536 PNG embeds byte-identically in a second immutable report version. Synthetic/provider boundaries retained."
+    },
+    {
+      "id": 8,
+      "task": "Run regression and security checks",
+      "status": "Blocked",
+      "evidence": "Full upstream pytest regression requires missing pytest 9.0.2; dependency installation awaits permission. Stdlib acceptance continues."
+    },
+    {
+      "id": 9,
+      "task": "Complete independent review",
+      "status": "Done",
+      "evidence": "Independent review PASS for bounded synthetic/offline draft scope: all 22 frozen file hashes verified, 37/37 tests rerun, v2 report/PNG hashes and both receipts verified, controls/CSP reviewed; no outstanding critical/high/medium finding."
+    },
+    {
+      "id": 10,
+      "task": "Publish authorized draft pull request",
+      "status": "Done",
+      "evidence": "Draft PR #2 published at https://github.com/alanism/Hermes-Thrice-Great-decision-prediction-stocks/pull/2, implementation commit 5f907f455ef6d9a0d63c169ab3ad0cc476a57619. All 22 remote file contents/modes and exact head/base verified; main unchanged. No CI checks/statuses/workflow runs present; not a CI pass."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "purpose": "Predeclared conditional financial-engine inputs for the report repair; not user-approved investment assumptions or observed future probabilities.",
+  "data_policy": "Retain the November5,2026 snapshot; fit only501 completed adjusted closes/500 returns throughNovember4. No private accounts, stock refresh or fabricated measurements.",
+  "engine_policy": "Use the actual installed frozen Capital Decision Lab analysis/engines. Preserve raw cases, output atoms, formula refs, canonical hashes and module-source identity. No replacement implementations for production Sharpe/Kelly/convexity outputs.",
+  "historical_sharpe": {
+    "periods_per_year": 252,
+    "primary_annual_cash_benchmark": 0.0,
+    "annual_cash_benchmark_sensitivity": [0.0, 0.03, 0.05],
+    "daily_conversion": "(1+annual_assumption) ** (1/252) - 1",
+    "benchmark_classification": "modeled constant cash benchmark, not measured Treasury yield",
+    "definition": "Native mean excess daily return / population daily standard deviation times sqrt252; not serial-correlation-adjusted or a forward Sharpe forecast."
+  },
+  "conditional_input_model": {
+    "family": "joint fixed-length moving-block historical bootstrap",
+    "source_returns": 500,
+    "planning_sessions": 252,
+    "block_sessions": 21,
+    "trials": 4000,
+    "seed": 20261105,
+    "cross_sectional_policy": "Same sampled contiguous block indices across all5 names; blocks sampled with replacement.",
+    "probability_policy": "Empirical positive/negative terminal-return fractions are conditional on this historical-resampling model, not calibrated stock win odds. Handle exact-zero mass explicitly; never invent a missing loss tail.",
+    "kelly_payoffs": "Conditional mean positive and negative modeled terminal returns; binary compression omits within-state variability.",
+    "convexity_states": "All negative samples form bear. Positive samples split by sorted counts into lower50%, next40%, top10% (base/bull/moon). Each state uses its conditional mean and actual count/trials probability; preserve total mean and probability mass.",
+    "limits": "In-sample history reuse, stationarity, block-length choice, limited2-year data, estimation error, no valuation or independent forecast calibration; not an independent evidence family. Four-state dispersion/log growth is not the full bootstrap distribution."
+  },
+  "kelly_reference_assumptions": {
+    "capital_at_risk_usd": 1000,
+    "fraction": 0.25,
+    "confidence_haircut": 0.5,
+    "standalone_stock_exposure_cap": 0.3,
+    "joint_portfolio_exposure_cap": 1.0,
+    "authority": "Illustrative analyst/model choices, not user chosen, confirmed or authorized. References for five names are not an additive feasible allocation. No borrowing or trades."
+  },
+  "comparison_policy": "Retain original risk-only $1,000 targets and equal-dollar benchmark as comparisons, never relabel them Kelly allocations. Distinguish newly calculated conditional references from validated sizing authorization.",
+  "commentary_policy": "After parent verification, every simulated200-word lens must receive the same extended financial-engine packet and distinguish calculation from model validity. Existing baseline packet remains immutable."
+}

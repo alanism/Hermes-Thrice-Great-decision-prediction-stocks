@@ -1,0 +1,70 @@
+{
+  "scope": "Curated public report bundle; manifest excludes itself",
+  "files": [
+    {
+      "path": "D3-LICENSE.txt",
+      "bytes": 731,
+      "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+    },
+    {
+      "path": "PLTR_META_CRWD_AVGO_GOOG_Monocle_Report.html",
+      "bytes": 2242053,
+      "sha256": "25d74556d4cbd898ba89da22d685f5e20ecbd26de2b2c87cf7402c5b442c5afc"
+    },
+    {
+      "path": "PLTR_META_CRWD_AVGO_GOOG_Monocle_Report.pdf",
+      "bytes": 1816957,
+      "sha256": "0d4d048f29d8b28ae0c93ceb155ba1bfa74440459c075e38b684cc6dc995b6dd"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4214,
+      "sha256": "ef67067b47e671205cf77a7cf0864b36ac1bb26edf61bcb5b54a3b638aea3171"
+    },
+    {
+      "path": "design.md",
+      "bytes": 7092,
+      "sha256": "63a034ee5f659f53d8bfa4c6ea67cf05ce10ea0f1c891a8174f5f799a4379f3c"
+    },
+    {
+      "path": "execution-summary.json",
+      "bytes": 13323,
+      "sha256": "66cada9f764602cddcfcacd75458bc860bd461c165a3996a14fe5764628e8da5"
+    },
+    {
+      "path": "finance-method-spec.json",
+      "bytes": 3235,
+      "sha256": "ac8b21e804724871aa0d648903359447e9881538aef8bc29275de711b1c8db2d"
+    },
+    {
+      "path": "methodology.md",
+      "bytes": 6761,
+      "sha256": "13b1b292bb919744e69117364e30c111fcf35a8430074d6115c55e4fb7a2aadd"
+    },
+    {
+      "path": "metric-summary.csv",
+      "bytes": 1128,
+      "sha256": "b36a9a76205c364a694da135c2cb1f0277cc42e4440c9a394c659cd32c4cdf30"
+    },
+    {
+      "path": "model-definitions.json",
+      "bytes": 1767,
+      "sha256": "7b284a66be86ae6084c3430ef88d8291b4bd923d7a08774278943fd19d5ffac6"
+    },
+    {
+      "path": "tailwind.theme.json",
+      "bytes": 997,
+      "sha256": "3852a14f6307a714a0fa741bceae695bd24c1ad048462e378d025d9af67ab949"
+    },
+    {
+      "path": "tokens.json",
+      "bytes": 2516,
+      "sha256": "c4f51fdb7cb0207bc8a191c3063259c072354ff686e7546763697b0c98f6185f"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 4309,
+      "sha256": "f794e2decf63823497086b3d1fb8598701d0e75efeffa56f91cdf8be502ef5d5"
+    }
+  ]
+}

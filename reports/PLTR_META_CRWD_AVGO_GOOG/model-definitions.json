@@ -1,0 +1,30 @@
+{
+  "annual_effective_benchmark_scenarios": [
+    0,
+    0.03,
+    0.05
+  ],
+  "block_sessions": 21,
+  "calibration": "In-sample empirical resampling only; not a calibrated forward probability, not independent model-family evidence",
+  "capital_at_risk_usd": 1000,
+  "confidence_haircut": 0.5,
+  "convexity_buckets": "all negatives -> bear; sorted positives split floor(50%), floor(90%) boundaries -> base/bull/moon; conditional means and empirical counts/N",
+  "daily_baseline_conversion": "(1+annual_effective_rate)**(1/252)-1",
+  "horizon_sessions": 252,
+  "kelly_fraction": 0.25,
+  "limits": [
+    "Shared retained data; stationarity and 21-session block choices assumed; no valuation or new validated edge.",
+    "Binary Kelly averages and four-bucket convexity compress dispersion; expected log growth is binary, not the full bootstrap distribution.",
+    "Illustration only: fractions, haircut, caps and baseline rates were not user chosen or approved.",
+    "Per-name capped references do not form a budget-feasible portfolio and do not replace existing $1000 targets.",
+    "Portfolio references are standalone unlevered sleeves; no borrowing, margin or account facts assumed.",
+    "Finite scenario asymmetry is not option gamma or open-ended optionality."
+  ],
+  "payoff_units": "USD P&L on explicitly assumed standalone $1000 capital; return units remain decimal returns",
+  "resampling": "12 independently selected contiguous 21-session noncircular blocks; block start uniform 0..479 inclusive; common draws across seven streams",
+  "seed": 20261105,
+  "single_stock_cap": 0.3,
+  "standalone_portfolio_sleeve_cap": 1.0,
+  "trials": 4000,
+  "zeros": "Count explicitly; refuse binary/four-bucket inputs if any exact-zero mass; never renormalize it away"
+}

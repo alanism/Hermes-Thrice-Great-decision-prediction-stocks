@@ -8,6 +8,12 @@ It turns your real portfolio, your thesis, and messy real-world evidence — Pol
 
 > **New here? Read [START_HERE.md](START_HERE.md)** — the operational guide: what you do manually (portfolio screenshots/CSV), what's automated (cron jobs), and the artifact conventions.
 
+## Public research report
+
+**[PLTR · META · CRWD · AVGO · GOOG — report bundle](reports/PLTR_META_CRWD_AVGO_GOOG/README.md)** · [PDF](reports/PLTR_META_CRWD_AVGO_GOOG/PLTR_META_CRWD_AVGO_GOOG_Monocle_Report.pdf) · [offline interactive HTML](reports/PLTR_META_CRWD_AVGO_GOOG/PLTR_META_CRWD_AVGO_GOOG_Monocle_Report.html) · [design.md](reports/PLTR_META_CRWD_AVGO_GOOG/design.md)
+
+Fixed November 5, 2026 public snapshots, hypothetical $1,000 budget, actual plugin Sharpe/Kelly/convexity outputs, Page diagnostics and eight simulated investor lenses. Includes public methodology, metric/verification summaries and checksums. Conditional calculations are not calibrated forecasts, authenticated holdings or investment approval. This report publication does not deploy or publish the separately verified local plugin release.
+
 ---
 
 ## 1. Quick Start

@@ -1,0 +1,140 @@
+{
+  "status": "LOCAL_PUBLICATION_CHECKS_PASS",
+  "verified_at": "2026-11-05T21:57:27.169862+00:00",
+  "scope": "Exact public HTML and actual exported PDF; publication readback recorded separately after push",
+  "source_snapshot": "November 5, 2026; completed history through November 4, 2026",
+  "html_byte_identical_to_verified_canonical": true,
+  "historical_integrated_regression": {
+    "test_count": 67,
+    "record_sha256": "c78f917c2776acd87946f2ae8981c6a3cf607137690d30db620aaf236fbc971c",
+    "note": "Previous integrated engine/report run; not a claim of67new publication tests"
+  },
+  "fresh_publication_checks": {
+    "exact_public_html_browser_tests": 8,
+    "physical_pdf_content_and_font_tests": 2,
+    "pdf_geometry_and_full_essay_fidelity": {
+      "pages": 53,
+      "minimum_font_pt": 12.0,
+      "offpage_text_count": 0,
+      "lens_fidelity": [
+        {
+          "name": "Scott Galloway",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Brad Gerstner",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Chris Camillo",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Laffont / Coatue",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Michael Mauboussin",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Warren Buffett / Charlie Munger \u2014 combined card",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Martin Shkreli",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        },
+        {
+          "name": "Ed Thorp",
+          "source_words": 200,
+          "entire_body_alphanumeric_sequence_preserved": true
+        }
+      ],
+      "all_seven_case_and_analysis_hashes_preserved": true,
+      "main_math_page": 6,
+      "capture_pages": [
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ],
+      "note": "Full-body alphanumeric sequence check ignores PDF line breaks, spacing and punctuation shaping; source HTML bodies are each200 whitespace-delimited words."
+    },
+    "export_runtime": {
+      "figures": 5,
+      "tables": 25,
+      "captures": 6,
+      "words": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "closedPrintDisclosures": 0,
+      "activeTransitions": 0,
+      "d3Version": "7.9.2",
+      "matrix_label_gaps_px": [
+        {
+          "label": "PLTR",
+          "gap": 22.078125
+        },
+        {
+          "label": "META",
+          "gap": 17.322509765625
+        },
+        {
+          "label": "CRWD",
+          "gap": 10.78125
+        },
+        {
+          "label": "AVGO",
+          "gap": 15.90625
+        },
+        {
+          "label": "GOOG",
+          "gap": 10.4375
+        }
+      ],
+      "browser": "155.0.8059.84",
+      "playwright": "1.64.1",
+      "remoteRequests": [],
+      "javascriptErrors": [],
+      "paper": "A4 portrait",
+      "html_sha256": "25d74556d4cbd898ba89da22d685f5e20ecbd26de2b2c87cf7402c5b442c5afc",
+      "pdf_sha256": "0d4d048f29d8b28ae0c93ceb155ba1bfa74440459c075e38b684cc6dc995b6dd"
+    },
+    "design_lint": {
+      "errors": 0,
+      "warnings": 0,
+      "infos": 1
+    }
+  },
+  "privacy": {
+    "private_local_folder_included": false,
+    "account_snapshots_included": false,
+    "credentials_included": false,
+    "machine_specific_runtime_files_included": false
+  },
+  "limitations": [
+    "Public summaries are not the full raw execution/source archive",
+    "Historical resampling is not calibrated forward probability or approved sizing",
+    "PDF is static; interactive controls require the HTML",
+    "Tagged PDF is not certified PDF/UA, PDF/A or full assistive-technology conformance",
+    "No non-Chromium or other-OS certification; no hosted CI claim",
+    "The frozen plugin release is not deployed or published by this report-only commit"
+  ]
+}

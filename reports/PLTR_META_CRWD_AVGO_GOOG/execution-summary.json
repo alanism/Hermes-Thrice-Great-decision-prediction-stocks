@@ -1,0 +1,297 @@
+{
+  "scope": "Selected public execution verification, not the complete raw case archive or a published plugin release",
+  "plugin_version": "0.2.0",
+  "frozen_local_source_commit": "330cdfee69f799f268c13005873bb77d8e7223e4",
+  "actual_native_calls": {
+    "risk.py:sharpe": 35,
+    "allocation.py:analyze_kelly": 35,
+    "convexity.py:analyze_convexity": 35
+  },
+  "installed_files_rehashed": 136,
+  "observed_sources_rehashed": 8,
+  "actual_current_desktop_dispatch": false,
+  "streams": {
+    "AVGO": {
+      "sharpe": 0.8781408067392362,
+      "full_kelly": 3.896879321473216,
+      "capped_reference": 0.3,
+      "convexity_score": 16.539570406453322,
+      "case_hash": "c13bac0aa5449a71954701afbbac114d569b87bed6e3574f182c19af45185213",
+      "analysis_hash": "065271b8fdef1ffe0c2068b25c9c6cbf327c22b152ebac04baeae35e4b0bc37b",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.6405196390232949,
+      "native_compressed_max_loss_usd": 189.92679448411747
+    },
+    "CRWD": {
+      "sharpe": 1.3657990235636326,
+      "full_kelly": 4.838778725154173,
+      "capped_reference": 0.3,
+      "convexity_score": 50.96914881028717,
+      "case_hash": "12bdc0a410e55b9647293b92eb9a3ea18fa25f3a9fdcb4b58d2eff00422c6b91",
+      "analysis_hash": "895631633a00cc7ba63cbe7d3cbe241dc5d809f966bb2bbdb1a43652eb10dd06",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.6523443079077226,
+      "native_compressed_max_loss_usd": 181.13247734931267
+    },
+    "GOOG": {
+      "sharpe": 0.9690649190069135,
+      "full_kelly": 5.454129921053724,
+      "capped_reference": 0.3,
+      "convexity_score": 20.88430550944668,
+      "case_hash": "5a0aa01725f1633f4f323fe35af42889826d310e0232263c9f25352840412e98",
+      "analysis_hash": "75335b0817f71f1784a2f8417a3e630b11d7f4ba335dce554f18226790a70fa4",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.5747543272139877,
+      "native_compressed_max_loss_usd": 146.76813867460893
+    },
+    "META": {
+      "sharpe": 0.3269838590082,
+      "full_kelly": 1.751035293872428,
+      "capped_reference": 0.2188794117340535,
+      "convexity_score": 2.890954954576984,
+      "case_hash": "d5af73b0302ea3916eece769f109f14ee9333c0bb9d3e07cc33e6b72b125d117",
+      "analysis_hash": "b3f55d1cca7fcd3319295dce266920665f8f59f332c02c59d4667e48efaa46b5",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.7304928177644658,
+      "native_compressed_max_loss_usd": 220.4859674639015
+    },
+    "PLTR": {
+      "sharpe": 1.2609622608190398,
+      "full_kelly": 3.5929999821944576,
+      "capped_reference": 0.3,
+      "convexity_score": 35.06124172068743,
+      "case_hash": "89d052ae396356895b4f89d22b8ea70cfd126bf5c0bf5d4c1f5bf0a20b4a50c6",
+      "analysis_hash": "67e16087fa7e0fbfbd73258a174bb29e6d010759d8d1a5a212d38abb33896969",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.7443849107559513,
+      "native_compressed_max_loss_usd": 231.37843337294706
+    },
+    "capped_inverse_vol": {
+      "sharpe": 1.3836007119837797,
+      "full_kelly": 7.7731443018318,
+      "capped_reference": 0.971643037728975,
+      "convexity_score": 68.42435228788858,
+      "case_hash": "d9dd67af3422bf21709fbf2539bdf1265575b8c9e7bbe8bed7931793c01c5606",
+      "analysis_hash": "a09c4055088cbdcc50b27af2cd3f55e5a39ff4be37e4a9faeb670feeeb5092b6",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.5091547048173233,
+      "native_compressed_max_loss_usd": 117.45047611420974
+    },
+    "equal_weight": {
+      "sharpe": 1.4298360652044007,
+      "full_kelly": 7.707731762240941,
+      "capped_reference": 0.9634664702801177,
+      "convexity_score": 79.40117477249174,
+      "case_hash": "22830738a7e4958494ae3aabb4dbafd554314381c7c49f7602f483a4a5dda36a",
+      "analysis_hash": "f8cea10c8dca0789b70635fb4021f968963c924fc4beb443a28a45f65983e8e9",
+      "native_dispatch_passed": true,
+      "independent_algebra_matches": true,
+      "actual_worst_resampled_return": -0.493122614452012,
+      "native_compressed_max_loss_usd": 119.26657037806982
+    }
+  },
+  "retained_receipt_hashes": {
+    "finance-engines/raw/PLTR-base-native.json": "e799e4307f859114062a8d8ccc4b0f0e0d7cf9cada37703559aec682512d381f",
+    "finance-engines/raw/PLTR-base-cli.json": "0602fc03fd06500d2f17149e8252013cc64b4d4b4b614e317b600a304fe51baf",
+    "finance-engines/raw/PLTR-base-handler.json": "0539929f4370205775db88e0258ecfc2d928c9fe0832d91fac70313a18113d13",
+    "finance-engines/raw/META-base-native.json": "a22b595e547097fcb023a2c9a210fcd6dcf0a9c26f0f67151cc2af7bc0f1ed16",
+    "finance-engines/raw/META-base-cli.json": "60d136cb32d88f32b072e94839a97f3647d4195a8c95ae053c54b45643095993",
+    "finance-engines/raw/META-base-handler.json": "97b4df3a0b0f2e8893a8ba78b61a61e911544d9bd3a55db8dd2263225917a827",
+    "finance-engines/raw/CRWD-base-native.json": "850b91773ed2bde65e8f04fb86d871f721a8651a9f34d52f726f4ddf7020bf2a",
+    "finance-engines/raw/CRWD-base-cli.json": "d3c5cc6647d593840545d7908efbda4ce776aa47ed039cb1aebcd530d686f2b4",
+    "finance-engines/raw/CRWD-base-handler.json": "371e932fdd8cb21e997d0386a246d6bb874ddc9cdfb59f7ea2bb76e1edd2b90e",
+    "finance-engines/raw/AVGO-base-native.json": "8e25ac33349a604e66632b7f2064fe80254153b2047a3afd780a05a1342caf98",
+    "finance-engines/raw/AVGO-base-cli.json": "617486c0909f00a42197de8f1de178395b60dbe3a7716a1028a72ab035d2e476",
+    "finance-engines/raw/AVGO-base-handler.json": "a746e2f5d9e323dd7b678529e4d9f03e70899a235b5f7aa897cf38e39d457d5e",
+    "finance-engines/raw/GOOG-base-native.json": "0d606698249fb4aa733cbe1926eebbe5a715cd7886c47d2560b0184cf527d938",
+    "finance-engines/raw/GOOG-base-cli.json": "fd0d26da3ca207df254d76c55ae80fb7e50f21fffb3921fde2d3b316402f508a",
+    "finance-engines/raw/GOOG-base-handler.json": "20564a723b273c7f858c530cb7951d210eaa1c13babd985b2d9177aceff17617",
+    "finance-engines/raw/equal_weight-base-native.json": "2c02b5223446dde9bba38175b372b88130b2097dadb40fe5500390a4fec0113e",
+    "finance-engines/raw/equal_weight-base-cli.json": "ce5995d86ef479647c46c27e4a3e1d6be089e3c053b126f688f1531ebcae54cd",
+    "finance-engines/raw/equal_weight-base-handler.json": "e6c5f164cb1e6dc382d9c4fab998651921bcb7c63e0788ebed538e7068e5d982",
+    "finance-engines/raw/capped_inverse_vol-base-native.json": "8560cab5bcf0e2b17f3df2bdc859a33afb0bf277ad1e4587b6e8aa0bad9de2bb",
+    "finance-engines/raw/capped_inverse_vol-base-cli.json": "8f00bc9a909b94e766632e64ca6c1824e1039ee1362e5c61a99042b6d6e509c6",
+    "finance-engines/raw/capped_inverse_vol-base-handler.json": "8c23bad7d64471184eb62416bf70fe5b0b83205b3d7c00fb69408243d2321cd9"
+  },
+  "contracts": {
+    "analysis_count": 35,
+    "case_count": 36,
+    "native_canonical_register_references_match": true,
+    "passed": true,
+    "register_count": 36
+  },
+  "full_distribution_log_check": {
+    "source_sha256": "25e3c955e5364fc3df091090aece11173e0c77d0f454c9fed44ef6638307f8d0",
+    "scope": "Additional domain check on retained4000model paths, not a new forecast/model or optimization",
+    "streams": {
+      "AVGO": {
+        "uncapped_full_fraction": 3.896879321473216,
+        "worst_path_wealth_factor_at_full": -1.4960277363073664,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.153871554542354,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "CRWD": {
+        "uncapped_full_fraction": 4.838778725154173,
+        "worst_path_wealth_factor_at_full": -2.156549758579311,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.2300289242283788,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "GOOG": {
+        "uncapped_full_fraction": 5.454129921053724,
+        "worst_path_wealth_factor_at_full": -2.1347847733129126,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.12248802441106328,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "META": {
+        "uncapped_full_fraction": 1.751035293872428,
+        "worst_path_wealth_factor_at_full": -0.2791187058258995,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.032308260709539745,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "PLTR": {
+        "uncapped_full_fraction": 3.5929999821944576,
+        "worst_path_wealth_factor_at_full": -1.674574971091956,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.25700474241989185,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "capped_inverse_vol": {
+        "uncapped_full_fraction": 7.7731443018318,
+        "worst_path_wealth_factor_at_full": -2.9577329925016285,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.4099635878500941,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      },
+      "equal_weight": {
+        "uncapped_full_fraction": 7.707731762240941,
+        "worst_path_wealth_factor_at_full": -2.800856838091067,
+        "native_full_distribution_log_growth_at_full": {
+          "value": null,
+          "provenance_class": "unavailable",
+          "reason": "scenario log-growth inputs are outside the supported domain",
+          "unit": "log growth"
+        },
+        "native_full_distribution_log_growth_at_cap": {
+          "value": 0.44111413239487834,
+          "provenance_class": "calculated",
+          "unit": "capital fraction",
+          "input_refs": [
+            "kelly_scenarios",
+            "exposure"
+          ],
+          "formula_ref": "allocation.expected_log_growth.v1",
+          "limitations": [
+            "Depends entirely on supplied probability and odds"
+          ]
+        }
+      }
+    }
+  },
+  "authenticated_investment_approval": false
+}

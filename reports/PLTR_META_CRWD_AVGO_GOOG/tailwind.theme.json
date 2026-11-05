@@ -1,0 +1,55 @@
+{
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#000000",
+        "secondary": "#454545",
+        "tertiary": "#ffc500",
+        "neutral": "#fdfcf3",
+        "rule": "#d9d9d9"
+      },
+      "fontFamily": {
+        "h1": [
+          "Georgia"
+        ],
+        "body-md": [
+          "Georgia"
+        ],
+        "label-caps": [
+          "Arial"
+        ]
+      },
+      "fontSize": {
+        "h1": [
+          "64px",
+          {
+            "letterSpacing": "-0.04em",
+            "fontWeight": "400"
+          }
+        ],
+        "body-md": [
+          "18px",
+          {
+            "fontWeight": "400"
+          }
+        ],
+        "label-caps": [
+          "12px",
+          {
+            "letterSpacing": "0.05em",
+            "fontWeight": "700"
+          }
+        ]
+      },
+      "borderRadius": {
+        "none": "0px"
+      },
+      "spacing": {
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px",
+        "section": "40px"
+      }
+    }
+  }
+}
